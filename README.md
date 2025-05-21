@@ -44,13 +44,7 @@ This project implements an advanced transaction anomaly detection system for Ant
 
 ```
 Transaction Anomaly Detection System/
-├── data/                           # Data storage
-│   └── PS_20174392719_1491204439457_log.csv  # Transaction dataset
-├── notebooks/                      # Jupyter notebooks
-│   ├── 1_exploratory_data_analysis.ipynb     # Data exploration
-│   ├── 2_aml_scenarios_and_risk_scoring.ipynb # Rule-based analysis
-│   ├── 3_ml_anomaly_detection.ipynb          # ML-based analysis
-│   └── 4_network_analysis.ipynb              # Graph-based analysis
+├── PS_20174392719_1491204439457_log.csv  # Transaction dataset
 ├── src/                            # Source code
 │   ├── data/                       # Data processing modules
 │   │   └── preprocessor.py         # Data preprocessing
@@ -104,14 +98,6 @@ The dataset used is the "IEEE-CIS Fraud Detection" dataset from Kaggle or simila
 ### Running the Main Analysis:
 ```bash
 python src/main.py
-```
-
-### Exploring the Notebooks:
-Run Jupyter Notebook or Jupyter Lab to explore the analysis notebooks:
-```bash
-jupyter notebook
-# or
-jupyter lab
 ```
 
 ## Model Performance
