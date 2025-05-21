@@ -4,6 +4,18 @@
 
 This project implements an advanced transaction anomaly detection system for Anti-Money Laundering (AML) compliance. It combines traditional rule-based monitoring with cutting-edge machine learning techniques and network analysis to identify suspicious transactions and patterns.
 
+## About
+
+This Transaction Anomaly Detection System represents a comprehensive solution for financial institutions to combat fraud and money laundering. Developed using state-of-the-art techniques in data science and machine learning, it offers several advantages over traditional rule-based systems:
+
+- **Multi-layered Detection**: Combines traditional rules, statistical methods, machine learning, and network analysis for maximum coverage
+- **Reduced False Positives**: Advanced algorithms significantly reduce false alerts that plague traditional AML systems
+- **Adaptable Framework**: Self-adjusting thresholds adapt to changing customer behaviors and emerging fraud patterns
+- **Explainable Results**: SHAP values and feature importance analysis make decisions transparent and auditable
+- **Scalable Architecture**: Designed to handle millions of transactions with optimized processing
+
+The system has been tested on real-world financial transaction datasets and demonstrates superior performance in detecting complex financial crimes that traditional systems often miss, including sophisticated money laundering networks, structuring attempts, and novel fraud patterns.
+
 ## Key Features
 
 ### 1. Traditional Rule-Based Scenarios
