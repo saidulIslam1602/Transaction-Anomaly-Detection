@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: feature-store-pvc
+  namespace: transaction-anomaly-detection
+spec:
+  accessModes:
+  - ReadWriteMany
+  storageClassName: azurefile
+  resources:
+    requests:
+      storage: 100Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: models-pvc
+  namespace: transaction-anomaly-detection
+spec:
+  accessModes:
+  - ReadWriteMany
+  storageClassName: azurefile
+  resources:
+    requests:
+      storage: 50Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mlflow-pvc
+  namespace: transaction-anomaly-detection
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: managed-premium
+  resources:
+    requests:
+      storage: 100Gi
+

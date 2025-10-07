@@ -1,0 +1,161 @@
+{
+  "dashboard": {
+    "title": "Transaction Anomaly Detection - Overview",
+    "tags": ["aml", "fraud-detection", "ml"],
+    "timezone": "browser",
+    "schemaVersion": 16,
+    "version": 1,
+    "refresh": "30s",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Transaction Volume",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(transactions_total[5m])",
+            "legendFormat": "Transactions/sec"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "title": "Fraud Detection Rate",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "fraud_detection_rate",
+            "legendFormat": "Fraud Rate"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0}
+      },
+      {
+        "id": 3,
+        "title": "Model Accuracy",
+        "type": "gauge",
+        "targets": [
+          {
+            "expr": "model_accuracy",
+            "legendFormat": "Accuracy"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 6, "x": 0, "y": 8}
+      },
+      {
+        "id": 4,
+        "title": "Model Precision",
+        "type": "gauge",
+        "targets": [
+          {
+            "expr": "model_precision",
+            "legendFormat": "Precision"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 6, "x": 6, "y": 8}
+      },
+      {
+        "id": 5,
+        "title": "Model Recall",
+        "type": "gauge",
+        "targets": [
+          {
+            "expr": "model_recall",
+            "legendFormat": "Recall"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 6, "x": 12, "y": 8}
+      },
+      {
+        "id": 6,
+        "title": "API Latency (95th percentile)",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))",
+            "legendFormat": "p95 latency"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 16}
+      },
+      {
+        "id": 7,
+        "title": "Error Rate",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(http_requests_total{status=~\"5..\"}[5m])",
+            "legendFormat": "5xx errors"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16}
+      },
+      {
+        "id": 8,
+        "title": "Feature Serving Latency",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "feature_serving_latency_ms",
+            "legendFormat": "Latency (ms)"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 24}
+      },
+      {
+        "id": 9,
+        "title": "Data Drift Status",
+        "type": "stat",
+        "targets": [
+          {
+            "expr": "data_drift_detected",
+            "legendFormat": "Drift Detected"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 6, "x": 12, "y": 24}
+      },
+      {
+        "id": 10,
+        "title": "Pod CPU Usage",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(container_cpu_usage_seconds_total{namespace=\"transaction-anomaly-detection\"}[5m])",
+            "legendFormat": "{{ pod }}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 32}
+      },
+      {
+        "id": 11,
+        "title": "Pod Memory Usage",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "container_memory_usage_bytes{namespace=\"transaction-anomaly-detection\"}",
+            "legendFormat": "{{ pod }}"
+          }
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 12, "y": 32}
+      }
+    ],
+    "templating": {
+      "list": [
+        {
+          "name": "namespace",
+          "type": "query",
+          "query": "label_values(kube_pod_info, namespace)",
+          "current": {
+            "value": "transaction-anomaly-detection"
+          }
+        }
+      ]
+    },
+    "time": {
+      "from": "now-6h",
+      "to": "now"
+    }
+  }
+}
+

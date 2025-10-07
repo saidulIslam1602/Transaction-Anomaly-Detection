@@ -1,0 +1,114 @@
+groups:
+  - name: aml_application
+    interval: 30s
+    rules:
+      # High error rate
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: critical
+          component: api
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate is {{ $value | humanizePercentage }} for {{ $labels.instance }}"
+
+      # High latency
+      - alert: HighLatency
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 1
+        for: 5m
+        labels:
+          severity: warning
+          component: api
+        annotations:
+          summary: "High API latency"
+          description: "95th percentile latency is {{ $value }}s for {{ $labels.instance }}"
+
+      # Low prediction accuracy
+      - alert: LowModelAccuracy
+        expr: model_accuracy < 0.85
+        for: 15m
+        labels:
+          severity: critical
+          component: ml-model
+        annotations:
+          summary: "Model accuracy degraded"
+          description: "Model accuracy dropped to {{ $value | humanizePercentage }}"
+
+      # Data drift detected
+      - alert: DataDriftDetected
+        expr: data_drift_detected == 1
+        for: 5m
+        labels:
+          severity: warning
+          component: ml-model
+        annotations:
+          summary: "Data drift detected"
+          description: "Data distribution drift detected in production data"
+
+      # High memory usage
+      - alert: HighMemoryUsage
+        expr: (container_memory_usage_bytes / container_spec_memory_limit_bytes) > 0.9
+        for: 5m
+        labels:
+          severity: warning
+          component: infrastructure
+        annotations:
+          summary: "High memory usage"
+          description: "Memory usage is {{ $value | humanizePercentage }} for {{ $labels.pod }}"
+
+      # Pod crash looping
+      - alert: PodCrashLooping
+        expr: rate(kube_pod_container_status_restarts_total[15m]) > 0
+        for: 5m
+        labels:
+          severity: critical
+          component: infrastructure
+        annotations:
+          summary: "Pod is crash looping"
+          description: "Pod {{ $labels.pod }} in namespace {{ $labels.namespace }} is crash looping"
+
+      # High fraud rate
+      - alert: HighFraudRate
+        expr: fraud_detection_rate > 0.10
+        for: 10m
+        labels:
+          severity: warning
+          component: business
+        annotations:
+          summary: "Unusually high fraud detection rate"
+          description: "Fraud rate is {{ $value | humanizePercentage }}, which is above threshold"
+
+      # Feature serving latency
+      - alert: HighFeatureLatency
+        expr: feature_serving_latency_ms > 100
+        for: 5m
+        labels:
+          severity: warning
+          component: feature-store
+        annotations:
+          summary: "High feature serving latency"
+          description: "Feature serving latency is {{ $value }}ms, exceeding 100ms target"
+
+      # Model prediction failures
+      - alert: ModelPredictionFailures
+        expr: rate(model_prediction_failures_total[5m]) > 0.01
+        for: 5m
+        labels:
+          severity: critical
+          component: ml-model
+        annotations:
+          summary: "Model prediction failures"
+          description: "Model prediction failure rate is {{ $value | humanizePercentage }}"
+
+      # Disk space low
+      - alert: DiskSpaceLow
+        expr: (node_filesystem_avail_bytes / node_filesystem_size_bytes) < 0.1
+        for: 5m
+        labels:
+          severity: warning
+          component: infrastructure
+        annotations:
+          summary: "Low disk space"
+          description: "Disk space is below 10% on {{ $labels.instance }}"
+

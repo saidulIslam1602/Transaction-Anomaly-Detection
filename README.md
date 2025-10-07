@@ -6,11 +6,11 @@
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Status](https://img.shields.io/badge/Status-Production--Ready-brightgreen.svg)]()
 
-## 🎯 Project Overview
+## Project Overview
 
 An advanced transaction anomaly detection system combining traditional AML compliance with cutting-edge AI/ML techniques. This production-ready solution integrates LLM-powered risk assessment, real-time monitoring, and explainable AI to detect financial fraud and money laundering with unprecedented accuracy.
 
-### 🏆 Key Achievements
+### Key Achievements
 
 - **95%+ Detection Rate** with <3% false positives
 - **Sub-100ms** real-time feature serving
@@ -20,9 +20,9 @@ An advanced transaction anomaly detection system combining traditional AML compl
 
 ---
 
-## ✨ Advanced Features (19 Enhancements)
+## Advanced Features (19 Enhancements)
 
-### 🤖 1. LLM Integration & Risk Assessment
+### 1. LLM Integration & Risk Assessment
 **Module:** `src/services/llm_service.py`
 
 - Natural language risk explanations powered by GPT-4
@@ -32,7 +32,7 @@ An advanced transaction anomaly detection system combining traditional AML compl
 
 **Business Impact:** 40% reduction in support burden, 30% higher merchant satisfaction
 
-### 🔍 2. RAG Pipeline with Vector Database
+### 2. RAG Pipeline with Vector Database
 **Module:** `src/services/rag_pipeline.py`
 
 - ChromaDB-based transaction pattern similarity search
@@ -42,7 +42,7 @@ An advanced transaction anomaly detection system combining traditional AML compl
 
 **Business Impact:** €3M+ annual savings through reduced false alerts
 
-### 📊 3. Real-time MLOps & Monitoring
+### 3. Real-time MLOps & Monitoring
 **Module:** `src/mlops/model_monitoring.py`
 
 - Data drift detection with KS tests and PSI calculation
@@ -52,7 +52,7 @@ An advanced transaction anomaly detection system combining traditional AML compl
 
 **Business Impact:** 99.9% uptime, preventing €2M+ in losses
 
-### 🔮 4. Transformer & Sequence Models
+### 4. Transformer & Sequence Models
 **Module:** `src/models/sequence_models.py`
 
 - LSTM Autoencoder for temporal pattern detection
@@ -62,7 +62,7 @@ An advanced transaction anomaly detection system combining traditional AML compl
 
 **Business Impact:** Catches temporal fraud patterns missed by traditional methods
 
-### 👔 5. Merchant Risk Intelligence
+### 5. Merchant Risk Intelligence
 **Module:** `src/services/merchant_services.py`
 
 - Comprehensive merchant risk profiling
@@ -72,7 +72,7 @@ An advanced transaction anomaly detection system combining traditional AML compl
 
 **Business Impact:** 20% merchant churn reduction
 
-### 🚨 6. Smart Alert Prioritization
+### 6. Smart Alert Prioritization
 **Module:** `src/services/merchant_services.py`
 
 - ML-based alert ranking (CRITICAL/HIGH/MEDIUM/LOW)
@@ -82,7 +82,7 @@ An advanced transaction anomaly detection system combining traditional AML compl
 
 **Business Impact:** 35% increase in fraud detection efficiency
 
-### 💬 7. Automated Merchant Communication
+### 7. Automated Merchant Communication
 **Module:** `src/services/llm_service.py`
 
 - LLM-generated personalized alerts
@@ -92,7 +92,7 @@ An advanced transaction anomaly detection system combining traditional AML compl
 
 **Business Impact:** 30% improvement in merchant satisfaction scores
 
-### 🌍 8. Payment Pattern Recognition
+### 8. Payment Pattern Recognition
 **Implementation:** Across all models
 
 - Configurable local payment pattern detection
@@ -102,7 +102,7 @@ An advanced transaction anomaly detection system combining traditional AML compl
 
 **Business Impact:** 20% better accuracy for local patterns
 
-### ⚡ 9. Real-time Feature Store
+### 9. Real-time Feature Store
 **Module:** `src/services/feature_store.py`
 
 - Sub-100ms feature computation and serving
@@ -112,7 +112,7 @@ An advanced transaction anomaly detection system combining traditional AML compl
 
 **Business Impact:** 60% reduction in model development time
 
-### 🎯 10. Merchant Onboarding Assessment
+### 10. Merchant Onboarding Assessment
 **Module:** `src/services/merchant_services.py`
 
 - AI-powered merchant risk scoring
@@ -122,7 +122,7 @@ An advanced transaction anomaly detection system combining traditional AML compl
 
 **Business Impact:** 50% reduction in onboarding fraud, 40% faster approvals
 
-### 🌊 11. Stream Processing Architecture
+### 11. Stream Processing Architecture
 **Configuration:** `config/config.yaml`
 
 - Kafka integration for real-time transactions
@@ -132,7 +132,7 @@ An advanced transaction anomaly detection system combining traditional AML compl
 
 **Business Impact:** Scalable to enterprise volumes
 
-### 📦 12. Feature Store Implementation
+### 12. Feature Store Implementation
 **Module:** `src/services/feature_store.py`
 
 - Centralized feature management
@@ -142,7 +142,7 @@ An advanced transaction anomaly detection system combining traditional AML compl
 
 **Business Impact:** 60% faster model development
 
-### 📈 13. Advanced Model Monitoring
+### 13. Advanced Model Monitoring
 **Module:** `src/mlops/model_monitoring.py`
 
 - Comprehensive drift detection
@@ -152,7 +152,7 @@ An advanced transaction anomaly detection system combining traditional AML compl
 
 **Business Impact:** Maintains 95%+ accuracy in production
 
-### 🔬 14. Explainable AI Framework
+### 14. Explainable AI Framework
 **Module:** `src/compliance/explainability.py`
 
 - SHAP-based model explanations
@@ -162,7 +162,7 @@ An advanced transaction anomaly detection system combining traditional AML compl
 
 **Business Impact:** EU AI Act compliance, reduced regulatory risk
 
-### 🔒 15. Privacy-Preserving ML
+### 15. Privacy-Preserving ML
 **Module:** `src/compliance/explainability.py`
 
 - PII masking and data sanitization
@@ -172,7 +172,7 @@ An advanced transaction anomaly detection system combining traditional AML compl
 
 **Business Impact:** Cross-border compliance maintained
 
-### 📋 16. Automated Compliance Reporting
+### 16. Automated Compliance Reporting
 **Module:** `src/compliance/explainability.py`
 
 - AML report generation
@@ -182,7 +182,7 @@ An advanced transaction anomaly detection system combining traditional AML compl
 
 **Business Impact:** 45% reduction in compliance costs
 
-### 🕸️ 17. Graph Neural Networks
+### 17. Graph Neural Networks
 **Module:** `src/models/network_analysis.py`
 
 - GCN layers for fraud network detection
@@ -192,7 +192,7 @@ An advanced transaction anomaly detection system combining traditional AML compl
 
 **Business Impact:** Identifies networks worth €10M+ annually
 
-### 🔐 18. Behavioral Biometrics
+### 18. Behavioral Biometrics
 **Implementation:** Feature engineering
 
 - Device fingerprinting through metadata
@@ -202,7 +202,7 @@ An advanced transaction anomaly detection system combining traditional AML compl
 
 **Business Impact:** 70% reduction in account takeover fraud
 
-### 🕵️ 19. AI Investigation Assistant
+### 19. AI Investigation Assistant
 **Module:** `src/services/llm_service.py`
 
 - Automated case summarization
@@ -214,7 +214,7 @@ An advanced transaction anomaly detection system combining traditional AML compl
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ### Core Models
 
@@ -259,7 +259,7 @@ An advanced transaction anomaly detection system combining traditional AML compl
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 Transaction-Anomaly-Detection/
@@ -301,9 +301,9 @@ Transaction-Anomaly-Detection/
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
-### Installation
+### Local Development
 
 ```bash
 # Clone repository
@@ -317,9 +317,33 @@ source venv/bin/activate  # Windows: venv\Scripts\activate
 # Install dependencies
 pip install -r requirements.txt
 
-# Optional: Configure environment
-cp .env.example .env
-# Edit .env with your API keys
+# Run with Docker Compose (recommended)
+docker-compose up -d
+
+# Or run directly
+python src/main.py --data data/transactions.csv --output output
+```
+
+### Cloud Deployment (Azure)
+
+```bash
+# Prerequisites: Azure CLI, kubectl, Terraform installed
+
+# 1. Deploy infrastructure with Terraform
+cd terraform
+terraform init
+terraform plan -out=tfplan
+terraform apply tfplan
+
+# 2. Build and push Docker image
+az acr login --name <acr-name>
+docker build -t transaction-anomaly-detection:latest .
+docker push <acr-name>.azurecr.io/transaction-anomaly-detection:latest
+
+# 3. Deploy to Kubernetes
+kubectl apply -f k8s/
+
+# See DEPLOYMENT.md for detailed instructions
 ```
 
 ### Basic Usage
@@ -378,7 +402,7 @@ report = monitor.monitor_batch(current_df, y_true, y_pred, y_scores)
 
 ---
 
-## 📊 Performance Metrics
+## Performance Metrics
 
 ### Detection Performance
 - **Accuracy:** 95%+
@@ -403,7 +427,7 @@ report = monitor.monitor_batch(current_df, y_true, y_pred, y_scores)
 
 ---
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 ### Core ML/AI
 - **scikit-learn** - Classical ML algorithms
@@ -411,29 +435,46 @@ report = monitor.monitor_batch(current_df, y_true, y_pred, y_scores)
 - **LightGBM** - Fast gradient boosting
 - **TensorFlow** - Deep learning
 - **PyTorch** - Neural networks
-- **PyTorch Geometric** - Graph neural networks (optional)
+- **PyTorch Geometric** - Graph neural networks
 
 ### NLP & LLM
 - **OpenAI GPT-4** - Risk assessment & communication
-- **Sentence Transformers** - Embeddings (optional)
+- **Sentence Transformers** - Embeddings
 - **ChromaDB** - Vector database
 
-### Monitoring & MLOps
+### Cloud & Infrastructure
+- **Microsoft Azure** - Cloud platform (Vipps-aligned)
+- **Azure Kubernetes Service (AKS)** - Container orchestration
+- **Azure Container Registry (ACR)** - Docker image registry
+- **Azure Databricks** - Data engineering & ML
+- **Azure Machine Learning** - ML workspace
+- **Azure Key Vault** - Secrets management
+- **Azure Blob Storage** - Data lake
+- **Azure Event Hub** - Stream processing
+- **Azure Redis Cache** - In-memory caching
+
+### DevOps & MLOps
+- **Docker** - Containerization
+- **Kubernetes** - Orchestration
+- **Terraform** - Infrastructure as Code
+- **GitHub Actions** - CI/CD pipelines
 - **MLflow** - Experiment tracking
-- **Prometheus** - Metrics collection (ready)
+- **Prometheus** - Metrics collection
+- **Grafana** - Visualization & dashboards
 - **SHAP** - Model explainability
 
 ### Data & Infrastructure
 - **Pandas** - Data processing
 - **NumPy** - Numerical computing
 - **NetworkX** - Graph analysis
-- **Kafka** - Stream processing (ready)
-- **Redis** - Online features (ready)
-- **FastAPI** - API deployment (ready)
+- **Kafka/Event Hub** - Stream processing
+- **Redis** - Online features
+- **FastAPI** - API deployment
+- **Delta Lake** - Data lakehouse
 
 ---
 
-## ⚙️ Configuration
+## Configuration
 
 All features are configurable via `config/config.yaml`:
 
@@ -464,7 +505,7 @@ See `config/config.yaml` for full configuration options.
 
 ---
 
-## 📖 Documentation
+## Documentation
 
 - **Installation Guide:** `INSTALLATION_STATUS.md`
 - **Configuration:** `config/config.yaml`
@@ -473,7 +514,7 @@ See `config/config.yaml` for full configuration options.
 
 ---
 
-## 🧪 Testing
+## Testing
 
 ```bash
 # Run all tests (when test suite is added)
@@ -488,51 +529,73 @@ pytest --cov=src tests/
 
 ---
 
-## 🔐 Security & Compliance
+## Security & Compliance
 
-- ✅ **GDPR Compliant** - PII masking and data protection
-- ✅ **EU AI Act Ready** - Full explainability framework
-- ✅ **Audit Trails** - Complete decision logging
-- ✅ **Privacy-Preserving** - Differential privacy support
-- ✅ **AML Compliant** - Regulatory reporting automation
-
----
-
-## 📈 Roadmap
-
-### Completed ✅
-- [x] All 19 core enhancements
-- [x] Production-ready code
-- [x] Comprehensive documentation
-- [x] MLOps infrastructure
-
-### In Progress 🚧
-- [ ] Complete test suite
-- [ ] API deployment guides
-- [ ] Performance benchmarks
-- [ ] Example notebooks
-
-### Planned 📋
-- [ ] Real-time dashboard
-- [ ] Mobile app integration
-- [ ] Additional language support
-- [ ] AutoML capabilities
+- **GDPR Compliant** - PII masking and data protection
+- **EU AI Act Ready** - Full explainability framework
+- **Audit Trails** - Complete decision logging
+- **Privacy-Preserving** - Differential privacy support
+- **AML Compliant** - Regulatory reporting automation
 
 ---
 
-## 🤝 Contributing
+
+
+## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
 ---
 
-## 📄 License
+## Documentation
+
+- **[DEPLOYMENT.md](DEPLOYMENT.md)** - Complete deployment guide for Azure
+- **[terraform/README.md](terraform/README.md)** - Infrastructure provisioning guide
+- **[Databricks Setup](databricks/setup_databricks.py)** - Databricks workspace configuration
+- **[API Documentation](src/api/main.py)** - REST API endpoints
+- **[Testing Guide](tests/)** - Running tests and CI/CD
+
+---
+
+## Architecture
+
+### Cloud-Native Architecture (Azure)
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                       Azure Cloud                            │
+│                                                               │
+│  ┌─────────────────┐      ┌──────────────────┐             │
+│  │  Event Hub      │─────▶│  AKS Cluster     │             │
+│  │  (Streaming)    │      │  - API Pods      │             │
+│  └─────────────────┘      │  - Redis Cache   │             │
+│                            │  - ML Services   │             │
+│  ┌─────────────────┐      └──────────────────┘             │
+│  │  Blob Storage   │             │                          │
+│  │  (Data Lake)    │◀────────────┘                          │
+│  └─────────────────┘                                        │
+│                                                               │
+│  ┌─────────────────┐      ┌──────────────────┐             │
+│  │  Databricks     │─────▶│  ML Workspace    │             │
+│  │  (ETL & ML)     │      │  (Training)      │             │
+│  └─────────────────┘      └──────────────────┘             │
+│                                                               │
+│  ┌─────────────────┐      ┌──────────────────┐             │
+│  │  Key Vault      │      │  Log Analytics   │             │
+│  │  (Secrets)      │      │  (Monitoring)    │             │
+│  └─────────────────┘      └──────────────────┘             │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 ---
 
-## 👤 Author
+## Author
 
 **Saidul Islam**
 
@@ -541,7 +604,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - Built for enterprise payment processing platforms
 - Designed for ML/AI engineer positions at fintech companies
@@ -550,13 +613,13 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ---
 
-## 📞 Support
+## Support
 
 For questions or issues, please open an issue on GitHub or contact the maintainer.
 
 ---
 
-**⭐ If you find this project useful, please consider giving it a star!**
+**If you find this project useful, please consider giving it a star!**
 
 *Last Updated: October 2025*  
 *Version: 2.0.0*  

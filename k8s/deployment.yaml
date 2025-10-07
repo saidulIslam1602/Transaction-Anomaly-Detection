@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aml-api
+  namespace: transaction-anomaly-detection
+  labels:
+    app: aml-api
+    version: v1
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: aml-api
+  template:
+    metadata:
+      labels:
+        app: aml-api
+        version: v1
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+        prometheus.io/path: "/metrics"
+    spec:
+      serviceAccountName: aml-service-account
+      containers:
+      - name: aml-api
+        image: <ACR_NAME>.azurecr.io/transaction-anomaly-detection:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+          name: http
+          protocol: TCP
+        envFrom:
+        - configMapRef:
+            name: aml-config
+        - secretRef:
+            name: aml-secrets
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1Gi
+          limits:
+            cpu: 2000m
+            memory: 4Gi
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8000
+          initialDelaySeconds: 20
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        volumeMounts:
+        - name: feature-store
+          mountPath: /app/feature_store
+        - name: models
+          mountPath: /app/models
+        - name: azure-file
+          mountPath: /mnt/azure-file
+      volumes:
+      - name: feature-store
+        persistentVolumeClaim:
+          claimName: feature-store-pvc
+      - name: models
+        persistentVolumeClaim:
+          claimName: models-pvc
+      - name: azure-file
+        azureFile:
+          secretName: azure-storage-secret
+          shareName: aml-data
+          readOnly: false
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: aml-service-account
+  namespace: transaction-anomaly-detection
+  annotations:
+    azure.workload.identity/client-id: <AZURE_CLIENT_ID>
+

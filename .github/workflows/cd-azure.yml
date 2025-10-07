@@ -1,0 +1,155 @@
+name: CD - Deploy to Azure
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        type: choice
+        options:
+          - development
+          - staging
+          - production
+
+env:
+  AZURE_REGION: norwayeast
+  ACR_NAME: amlacr
+  AKS_CLUSTER_NAME: aml-aks-cluster
+  RESOURCE_GROUP: rg-aml-prod
+
+jobs:
+  build-and-push:
+    name: Build and Push to ACR
+    runs-on: ubuntu-latest
+    outputs:
+      image-tag: ${{ steps.meta.outputs.tags }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Log in to Azure Container Registry
+      uses: azure/docker-login@v1
+      with:
+        login-server: ${{ env.ACR_NAME }}.azurecr.io
+        username: ${{ secrets.ACR_USERNAME }}
+        password: ${{ secrets.ACR_PASSWORD }}
+
+    - name: Extract metadata (tags, labels) for Docker
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.ACR_NAME }}.azurecr.io/transaction-anomaly-detection
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=semver,pattern={{version}}
+          type=sha,prefix={{branch}}-
+          type=raw,value=latest,enable={{is_default_branch}}
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        build-args: |
+          BUILD_DATE=${{ github.event.head_commit.timestamp }}
+          VCS_REF=${{ github.sha }}
+          VERSION=${{ github.ref_name }}
+
+  deploy-to-aks:
+    name: Deploy to AKS
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    environment:
+      name: ${{ github.event.inputs.environment || 'production' }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Set AKS context
+      uses: azure/aks-set-context@v3
+      with:
+        resource-group: ${{ env.RESOURCE_GROUP }}
+        cluster-name: ${{ env.AKS_CLUSTER_NAME }}
+
+    - name: Get AKS credentials
+      run: |
+        az aks get-credentials --resource-group ${{ env.RESOURCE_GROUP }} --name ${{ env.AKS_CLUSTER_NAME }} --overwrite-existing
+
+    - name: Create namespace if not exists
+      run: |
+        kubectl create namespace transaction-anomaly-detection --dry-run=client -o yaml | kubectl apply -f -
+
+    - name: Create secrets from Azure Key Vault
+      run: |
+        # Retrieve secrets from Azure Key Vault
+        OPENAI_API_KEY=$(az keyvault secret show --vault-name aml-keyvault --name openai-api-key --query value -o tsv)
+        AZURE_STORAGE_CONN=$(az keyvault secret show --vault-name aml-keyvault --name azure-storage-connection-string --query value -o tsv)
+        
+        # Create Kubernetes secrets
+        kubectl create secret generic aml-secrets \
+          --from-literal=OPENAI_API_KEY="$OPENAI_API_KEY" \
+          --from-literal=AZURE_STORAGE_CONNECTION_STRING="$AZURE_STORAGE_CONN" \
+          --namespace=transaction-anomaly-detection \
+          --dry-run=client -o yaml | kubectl apply -f -
+
+    - name: Deploy to AKS
+      uses: azure/k8s-deploy@v4
+      with:
+        namespace: transaction-anomaly-detection
+        manifests: |
+          k8s/namespace.yaml
+          k8s/configmap.yaml
+          k8s/pvc.yaml
+          k8s/redis-deployment.yaml
+          k8s/service.yaml
+          k8s/deployment.yaml
+          k8s/hpa.yaml
+          k8s/ingress.yaml
+        images: |
+          ${{ env.ACR_NAME }}.azurecr.io/transaction-anomaly-detection:${{ github.sha }}
+
+    - name: Verify deployment
+      run: |
+        kubectl rollout status deployment/aml-api -n transaction-anomaly-detection --timeout=5m
+        kubectl get pods -n transaction-anomaly-detection
+        kubectl get services -n transaction-anomaly-detection
+
+    - name: Run smoke tests
+      run: |
+        # Wait for service to be ready
+        sleep 30
+        
+        # Get the service URL
+        SERVICE_IP=$(kubectl get service aml-api-service -n transaction-anomaly-detection -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+        
+        # Run smoke tests
+        curl -f http://$SERVICE_IP/health || exit 1
+        echo "Deployment successful and service is healthy"
+
+  notify:
+    name: Notify deployment status
+    runs-on: ubuntu-latest
+    needs: [deploy-to-aks]
+    if: always()
+    steps:
+    - name: Send notification
+      run: |
+        echo "Deployment to Azure AKS completed with status: ${{ needs.deploy-to-aks.result }}"
+        # Add notification logic (Slack, Teams, Email, etc.)
+

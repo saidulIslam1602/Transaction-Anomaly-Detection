@@ -1,0 +1,128 @@
+name: ML Model Training Pipeline
+
+on:
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      dataset_path:
+        description: 'Path to training dataset in Azure Blob Storage'
+        required: true
+        default: 'datasets/transactions.csv'
+
+env:
+  PYTHON_VERSION: '3.10'
+  AZURE_REGION: norwayeast
+
+jobs:
+  train-model:
+    name: Train ML Models
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install azure-storage-blob azure-ai-ml
+
+    - name: Download training data from Azure Blob
+      run: |
+        python scripts/download_data_from_azure.py \
+          --storage-account="${{ secrets.AZURE_STORAGE_ACCOUNT }}" \
+          --container="ml-data" \
+          --blob-path="${{ github.event.inputs.dataset_path || 'datasets/transactions.csv' }}" \
+          --local-path="data/transactions.csv"
+
+    - name: Train models with MLflow
+      env:
+        MLFLOW_TRACKING_URI: ${{ secrets.AZURE_MLFLOW_TRACKING_URI }}
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      run: |
+        python src/main.py \
+          --data data/transactions.csv \
+          --output output \
+          --mlflow-uri $MLFLOW_TRACKING_URI
+
+    - name: Upload models to Azure Blob Storage
+      run: |
+        az storage blob upload-batch \
+          --account-name ${{ secrets.AZURE_STORAGE_ACCOUNT }} \
+          --destination ml-models \
+          --source output/models/ \
+          --pattern "*.pkl"
+
+    - name: Register models in Azure ML
+      run: |
+        python scripts/register_models_azure_ml.py \
+          --workspace-name "aml-workspace" \
+          --resource-group "${{ env.RESOURCE_GROUP }}" \
+          --model-path "output/models/"
+
+    - name: Upload training artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: training-outputs
+        path: |
+          output/
+          !output/models/*.pkl
+        retention-days: 30
+
+  evaluate-model:
+    name: Evaluate Model Performance
+    needs: train-model
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Download artifacts
+      uses: actions/download-artifact@v3
+      with:
+        name: training-outputs
+        path: output/
+
+    - name: Evaluate model metrics
+      run: |
+        python scripts/evaluate_model_performance.py \
+          --metrics-file output/evaluation_metrics.json \
+          --threshold-file .github/model_thresholds.json
+
+    - name: Create model card
+      run: |
+        python scripts/create_model_card.py \
+          --output-dir output/ \
+          --model-card-path output/model_card.md
+
+    - name: Upload model card
+      uses: actions/upload-artifact@v3
+      with:
+        name: model-card
+        path: output/model_card.md
+
+  deploy-model:
+    name: Deploy Model to Production
+    needs: evaluate-model
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+    if: github.ref == 'refs/heads/main'
+    steps:
+    - name: Deploy models to AKS
+      run: |
+        echo "Triggering model deployment to AKS..."
+        # This would trigger the CD pipeline or update the deployment
+

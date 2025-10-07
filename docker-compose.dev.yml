@@ -1,0 +1,20 @@
+version: '3.8'
+
+# Development override for hot-reloading and debugging
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder  # Use builder stage for development
+    command: python -m uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - ./src:/app/src:ro
+      - ./config:/app/config:ro
+    environment:
+      - ENVIRONMENT=development
+      - LOG_LEVEL=DEBUG
+      - PYTHONDONTWRITEBYTECODE=1
+    stdin_open: true
+    tty: true
+

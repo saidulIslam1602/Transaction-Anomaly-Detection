@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: transaction-anomaly-detection
+  labels:
+    name: transaction-anomaly-detection
+    environment: production
+    app: aml-system
+
