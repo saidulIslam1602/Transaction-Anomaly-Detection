@@ -152,10 +152,53 @@ merchant_services:
   onboarding_assessment:
     enabled: true
     high_risk_industries:
+      # High-risk industries based on FinCEN and international AML standards
       - gambling
+      - casino
+      - betting
       - cryptocurrency
+      - crypto
+      - bitcoin
+      - adult entertainment
       - forex
-    high_risk_countries: []
+      - money transfer
+      - remittance
+      - precious metals
+      - jewelry
+      - arms
+      - weapons
+      - tobacco
+      - cannabis
+      - pawn shop
+      - cash intensive business
+      - money service business
+    
+    medium_risk_industries:
+      # Industries requiring enhanced due diligence
+      - real estate
+      - car dealer
+      - art dealer
+      - nonprofit
+      - charity
+      - travel agency
+      - import export
+      - consulting
+    
+    high_risk_countries:
+      # FATF high-risk jurisdictions (update regularly per official publications)
+      - iran
+      - north korea
+      - myanmar
+      - afghanistan
+      - syria
+      - yemen
+    
+    enhanced_monitoring_countries:
+      # Jurisdictions requiring enhanced due diligence
+      - cayman islands
+      - panama
+      - uae
+      - philippines
 
 # Model monitoring
 monitoring:

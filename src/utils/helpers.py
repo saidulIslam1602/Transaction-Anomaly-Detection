@@ -303,4 +303,32 @@ def create_time_windows(df: pd.DataFrame,
     result_df['time_window'] = result_df['step'] // window_size
     
     logger.info(f"Created time windows of size {window_size} steps")
-    return result_df 
+    return result_df
+
+
+def load_config(config_path: str = 'config/config.yaml') -> Dict[str, Any]:
+    """
+    Load configuration from YAML file.
+    
+    Args:
+        config_path: Path to configuration file
+        
+    Returns:
+        Dictionary with configuration settings
+    """
+    try:
+        import yaml
+        
+        if not os.path.exists(config_path):
+            logger.warning(f"Config file not found: {config_path}. Using defaults.")
+            return {}
+        
+        with open(config_path, 'r') as f:
+            config = yaml.safe_load(f)
+        
+        logger.info(f"Configuration loaded from {config_path}")
+        return config
+        
+    except Exception as e:
+        logger.error(f"Failed to load config: {str(e)}")
+        return {} 

@@ -394,12 +394,38 @@ class MerchantOnboardingRiskAssessment:
             risk_factors.append("Young business (less than 3 years)")
             risk_score += 10
         
-        # Check business type
-        high_risk_industries = ['gambling', 'cryptocurrency', 'adult', 'forex']
+        # Check business type (based on FinCEN and international AML standards)
+        high_risk_industries = [
+            'gambling', 'casino', 'betting', 'lottery',
+            'cryptocurrency', 'crypto', 'bitcoin', 'blockchain exchange',
+            'adult entertainment', 'adult', 'escort',
+            'forex', 'foreign exchange', 'money transfer', 'remittance',
+            'precious metals', 'jewelry', 'gold dealer',
+            'arms', 'weapons', 'ammunition',
+            'tobacco', 'vaping', 'e-cigarette',
+            'cannabis', 'marijuana', 'cbd',
+            'pawn shop', 'pawnbroker',
+            'cash intensive', 'atm operation',
+            'money service business', 'msb', 'check cashing'
+        ]
+        # Medium-risk industries requiring enhanced monitoring
+        medium_risk_industries = [
+            'real estate', 'property development',
+            'car dealer', 'auto sales', 'vehicle sales',
+            'art dealer', 'antique',
+            'nonprofit', 'charity', 'ngo',
+            'travel agency', 'tourism',
+            'import export', 'trading company',
+            'consulting', 'advisory services'
+        ]
+        
         industry = business_info.get('industry', '').lower()
         if any(risky in industry for risky in high_risk_industries):
-            risk_factors.append(f"High-risk industry: {industry}")
-            risk_score += 25
+            risk_factors.append(f"High-risk industry per AML standards: {industry}")
+            risk_score += 30
+        elif any(medium in industry for medium in medium_risk_industries):
+            risk_factors.append(f"Medium-risk industry requiring enhanced monitoring: {industry}")
+            risk_score += 15
         
         # Check ownership structure
         if business_info.get('ownership_verified') == False:
@@ -417,12 +443,27 @@ class MerchantOnboardingRiskAssessment:
             risk_factors.append("Very high transaction limit requested")
             risk_score += 15
         
-        # Check geographical risk
-        high_risk_countries = ['country1', 'country2']  # Placeholder
+        # Check geographical risk (based on FATF high-risk jurisdictions and AML standards)
+        # Note: This list should be regularly updated based on official FATF publications
+        high_risk_countries = [
+            'iran', 'north korea', 'myanmar', 'afghanistan', 'syria',
+            'yemen', 'zimbabwe', 'belarus', 'pakistan', 'uganda',
+            'south sudan', 'mali', 'mozambique', 'burkina faso',
+            'senegal', 'kenya', 'nicaragua', 'haiti', 'jamaica'
+        ]
+        # Additional monitoring jurisdictions (lower risk but require enhanced due diligence)
+        enhanced_monitoring_countries = [
+            'cayman islands', 'panama', 'uae', 'philippines',
+            'albania', 'barbados', 'mauritius', 'morocco'
+        ]
+        
         country = business_info.get('country', '').lower()
         if country in high_risk_countries:
-            risk_factors.append(f"High-risk country: {country}")
-            risk_score += 20
+            risk_factors.append(f"High-risk jurisdiction per FATF: {country}")
+            risk_score += 25
+        elif country in enhanced_monitoring_countries:
+            risk_factors.append(f"Enhanced monitoring jurisdiction: {country}")
+            risk_score += 15
         
         # Determine risk level and recommendation
         if risk_score >= 60:
