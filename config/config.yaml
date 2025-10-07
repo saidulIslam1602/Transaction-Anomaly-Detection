@@ -1,0 +1,260 @@
+# Transaction Anomaly Detection System Configuration
+
+# System settings
+system:
+  name: "Transaction Anomaly Detection System"
+  version: "2.0.0"
+  environment: "production"  # development, staging, production
+  log_level: "INFO"
+  output_dir: "./output"
+
+# Data processing
+data:
+  sample_size: null  # null for all data
+  validation_split: 0.2
+  test_split: 0.2
+  random_state: 42
+  
+  # Feature engineering
+  features:
+    numerical:
+      - amount
+      - oldbalanceOrg
+      - newbalanceOrig
+      - oldbalanceDest
+      - newbalanceDest
+    categorical:
+      - type
+    target: isFraud
+
+# Rule-based detection
+rule_engine:
+  large_transaction_threshold: 10000.0
+  structuring_threshold: 9000.0
+  structuring_window: 24
+  rapid_movement_threshold: 5
+  rapid_movement_window: 10
+
+# Adaptive thresholds
+adaptive_thresholds:
+  enabled: true
+  n_segments: 5
+  outlier_method: "iqr"  # iqr, zscore, mad
+
+# Machine learning models
+ml_models:
+  isolation_forest:
+    enabled: true
+    contamination: 0.01
+    n_estimators: 100
+    
+  xgboost:
+    enabled: true
+    max_depth: 6
+    learning_rate: 0.1
+    n_estimators: 100
+    
+  lightgbm:
+    enabled: true
+    num_leaves: 31
+    learning_rate: 0.05
+    n_estimators: 100
+    
+  random_forest:
+    enabled: true
+    n_estimators: 100
+    max_depth: 10
+    
+  autoencoder:
+    enabled: true
+    encoding_dim: 14
+    epochs: 50
+    batch_size: 256
+
+# Sequence models
+sequence_models:
+  enabled: true
+  lstm_autoencoder:
+    enabled: true
+    sequence_length: 10
+    hidden_dim: 64
+    num_layers: 2
+    
+  transformer:
+    enabled: false
+    sequence_length: 10
+    d_model: 128
+    nhead: 8
+    num_layers: 3
+
+# Network analysis
+network_analysis:
+  enabled: true
+  max_cycle_length: 10
+  fan_out_threshold: 10
+  fan_in_threshold: 10
+  
+  # GNN settings
+  gnn:
+    enabled: false  # Requires PyTorch Geometric
+    hidden_dim: 64
+    num_layers: 3
+    learning_rate: 0.001
+
+# LLM service
+llm:
+  enabled: false  # Requires OpenAI API key
+  provider: "openai"
+  model: "gpt-4"
+  temperature: 0.3
+  max_tokens: 500
+  
+  # Multi-language support
+  supported_languages:
+    - en
+    - no  # Norwegian
+    - sv  # Swedish
+    - dk  # Danish
+  
+  # Rate limiting
+  rate_limit:
+    requests_per_minute: 60
+    requests_per_day: 10000
+
+# RAG pipeline
+rag:
+  enabled: false  # Requires ChromaDB and sentence-transformers
+  embedding_model: "all-MiniLM-L6-v2"
+  vector_db_path: "./chroma_db"
+  similarity_threshold: 0.7
+  n_context: 20
+
+# Feature store
+feature_store:
+  enabled: true
+  storage_path: "./feature_store"
+  online_cache_size: 1000
+  aggregation_windows:
+    - 1  # 1 hour
+    - 24  # 24 hours
+    - 168  # 1 week
+
+# Merchant services
+merchant_services:
+  enabled: true
+  risk_profile_update_frequency: "daily"
+  alert_prioritization:
+    enabled: true
+    critical_threshold: 80
+    high_threshold: 60
+    medium_threshold: 40
+  
+  onboarding_assessment:
+    enabled: true
+    high_risk_industries:
+      - gambling
+      - cryptocurrency
+      - forex
+    high_risk_countries: []
+
+# Model monitoring
+monitoring:
+  enabled: true
+  drift_detection:
+    enabled: true
+    significance_level: 0.05
+    check_frequency: "daily"
+  
+  performance_monitoring:
+    enabled: true
+    alert_thresholds:
+      accuracy: 0.90
+      precision: 0.85
+      recall: 0.80
+      f1_score: 0.85
+      auc: 0.90
+  
+  prediction_monitoring:
+    enabled: true
+    window_size: 1000
+
+# Compliance and explainability
+compliance:
+  enabled: true
+  audit_logging:
+    enabled: true
+    log_file: "./logs/decision_audit.jsonl"
+  
+  explainability:
+    enabled: true
+    shap_enabled: true
+    top_features_count: 10
+  
+  reporting:
+    enabled: true
+    aml_threshold: 10000.0
+    report_frequency: "monthly"
+
+# Risk scoring
+risk_scoring:
+  weights:
+    rule_based: 3.0
+    ml_based: 2.0
+    network_based: 2.0
+  high_risk_threshold: 2.0
+  normalization_range: [0, 10]
+
+# MLflow tracking
+mlflow:
+  enabled: true
+  tracking_uri: "./mlruns"
+  experiment_name: "transaction_anomaly_detection"
+
+# Real-time processing
+real_time:
+  enabled: false  # Requires Kafka/Redis setup
+  feature_latency_target_ms: 100
+  prediction_latency_target_ms: 200
+  
+  kafka:
+    bootstrap_servers: "localhost:9092"
+    input_topic: "transactions"
+    output_topic: "anomaly_scores"
+  
+  redis:
+    host: "localhost"
+    port: 6379
+    db: 0
+
+# API deployment
+api:
+  enabled: false
+  host: "0.0.0.0"
+  port: 8000
+  workers: 4
+  reload: false
+
+# Alert notification
+notifications:
+  enabled: false
+  email:
+    enabled: false
+    smtp_server: "smtp.example.com"
+    smtp_port: 587
+    from_address: "alerts@example.com"
+  
+  webhook:
+    enabled: false
+    url: "https://example.com/webhook"
+
+# Performance tuning
+performance:
+  n_jobs: -1  # Use all CPU cores
+  batch_size: 1000
+  chunk_size: 10000
+
+# Debugging
+debug:
+  enabled: false
+  save_intermediate_results: false
+  verbose_logging: false
