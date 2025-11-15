@@ -1,0 +1,198 @@
+{
+  "report_period": "2025-11-10 to 2025-11-16",
+  "report_type": "weekly",
+  "total_transactions": 6362620,
+  "total_volume": 1144392944759.77,
+  "avg_daily_transactions": 908945.7142857143,
+  "avg_daily_volume": 163484706394.25287,
+  "fraud_count": 8213,
+  "fraud_rate": 0.12908204481801522,
+  "daily_breakdown": [
+    {
+      "day": 0,
+      "transaction_count": 571039,
+      "total_volume": 91739702581.6
+    },
+    {
+      "day": 1,
+      "transaction_count": 452761,
+      "total_volume": 71089866902.46
+    },
+    {
+      "day": 2,
+      "transaction_count": 6749,
+      "total_volume": 928174632.16
+    },
+    {
+      "day": 3,
+      "transaction_count": 21904,
+      "total_volume": 3151847930.01
+    },
+    {
+      "day": 4,
+      "transaction_count": 12995,
+      "total_volume": 1686137048.41
+    },
+    {
+      "day": 5,
+      "transaction_count": 440626,
+      "total_volume": 73410082580.19
+    },
+    {
+      "day": 6,
+      "transaction_count": 420282,
+      "total_volume": 67005674045.6
+    },
+    {
+      "day": 7,
+      "transaction_count": 449147,
+      "total_volume": 70063770684.1
+    },
+    {
+      "day": 8,
+      "transaction_count": 418103,
+      "total_volume": 57962539974.1
+    },
+    {
+      "day": 9,
+      "transaction_count": 392886,
+      "total_volume": 65244983870.08
+    },
+    {
+      "day": 10,
+      "transaction_count": 418006,
+      "total_volume": 60419645955.87
+    },
+    {
+      "day": 11,
+      "transaction_count": 349800,
+      "total_volume": 57416958973.76
+    },
+    {
+      "day": 12,
+      "transaction_count": 429335,
+      "total_volume": 138990970662.86
+    },
+    {
+      "day": 13,
+      "transaction_count": 398210,
+      "total_volume": 100190150947.32
+    },
+    {
+      "day": 14,
+      "transaction_count": 400706,
+      "total_volume": 77467173703.4
+    },
+    {
+      "day": 15,
+      "transaction_count": 375514,
+      "total_volume": 67922153515.56
+    },
+    {
+      "day": 16,
+      "transaction_count": 421098,
+      "total_volume": 73674178219.22
+    },
+    {
+      "day": 17,
+      "transaction_count": 29251,
+      "total_volume": 4726785950.24
+    },
+    {
+      "day": 18,
+      "transaction_count": 11286,
+      "total_volume": 1909061130.9
+    },
+    {
+      "day": 19,
+      "transaction_count": 19739,
+      "total_volume": 3626377923.14
+    },
+    {
+      "day": 20,
+      "transaction_count": 24589,
+      "total_volume": 4832327065.86
+    },
+    {
+      "day": 21,
+      "transaction_count": 52510,
+      "total_volume": 9439998440.4
+    },
+    {
+      "day": 22,
+      "transaction_count": 50432,
+      "total_volume": 8130728065.02
+    },
+    {
+      "day": 23,
+      "transaction_count": 33349,
+      "total_volume": 5310925999.84
+    },
+    {
+      "day": 24,
+      "transaction_count": 58712,
+      "total_volume": 9223593931.72
+    },
+    {
+      "day": 25,
+      "transaction_count": 13893,
+      "total_volume": 2237217017.01
+    },
+    {
+      "day": 26,
+      "transaction_count": 8574,
+      "total_volume": 1776018990.58
+    },
+    {
+      "day": 27,
+      "transaction_count": 14522,
+      "total_volume": 2973242212.57
+    },
+    {
+      "day": 28,
+      "transaction_count": 55037,
+      "total_volume": 9396287053.98
+    },
+    {
+      "day": 29,
+      "transaction_count": 11283,
+      "total_volume": 1996665270.51
+    },
+    {
+      "day": 30,
+      "transaction_count": 282,
+      "total_volume": 449703481.3
+    }
+  ],
+  "transaction_type_analysis": {
+    "amount_count": {
+      "CASH_IN": 1399284,
+      "CASH_OUT": 2237500,
+      "DEBIT": 41432,
+      "PAYMENT": 2151495,
+      "TRANSFER": 532909
+    },
+    "amount_sum": {
+      "CASH_IN": 236367391912.46,
+      "CASH_OUT": 394412995224.49,
+      "DEBIT": 227199221.28,
+      "PAYMENT": 28093371138.37,
+      "TRANSFER": 485291987263.17
+    },
+    "amount_mean": {
+      "CASH_IN": 168920.24200409636,
+      "CASH_OUT": 176273.96434614077,
+      "DEBIT": 5483.6653137671365,
+      "PAYMENT": 13057.604660187451,
+      "TRANSFER": 910647.0096454929
+    },
+    "isFraud_sum": {
+      "CASH_IN": 0,
+      "CASH_OUT": 4116,
+      "DEBIT": 0,
+      "PAYMENT": 0,
+      "TRANSFER": 4097
+    }
+  },
+  "comparison_note": "Week-over-week comparison requires historical data"
+}

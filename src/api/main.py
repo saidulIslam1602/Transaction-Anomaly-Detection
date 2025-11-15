@@ -11,10 +11,23 @@ from pydantic import BaseModel
 from typing import Dict, List, Optional
 import time
 import logging
+import sys
+from pathlib import Path
 
-# Setup logging
+# Setup logging first
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# Add src to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+try:
+    from services.feature_store import FeatureStore
+    from services.business_metrics import BusinessMetricsCalculator
+    FEATURE_STORE_AVAILABLE = True
+except ImportError:
+    FEATURE_STORE_AVAILABLE = False
+    logger.warning("Feature store not available, using simplified feature extraction")
 
 # Create FastAPI app
 app = FastAPI(
@@ -60,6 +73,14 @@ feature_serving_latency = Histogram(
 
 # Instrument app with Prometheus
 Instrumentator().instrument(app).expose(app)
+
+# Initialize services
+if FEATURE_STORE_AVAILABLE:
+    feature_store = FeatureStore()
+    business_calc = BusinessMetricsCalculator()
+else:
+    feature_store = None
+    business_calc = None
 
 
 # Request/Response models
@@ -139,17 +160,29 @@ async def predict(transaction: Transaction):
         # Count transaction
         transactions_total.inc()
         
-        # Extract features (mock implementation)
-        # In production, this would use the feature store
-        features = {
-            'amount': transaction.amount,
-            'type': transaction.type,
-            'balance_ratio': transaction.amount / (transaction.oldbalanceOrg + 1.0)
-        }
+        # Extract features using feature store if available
+        if feature_store:
+            transaction_dict = transaction.dict()
+            features = feature_store.compute_transaction_features(transaction_dict)
+            # Use feature-based risk calculation
+            amount = transaction.amount
+            balance_ratio = amount / (transaction.oldbalanceOrg + 1.0) if transaction.oldbalanceOrg > 0 else 0
+            # Simple risk scoring based on features (can be replaced with actual model)
+            risk_score = min(
+                (amount / 10000.0) * 0.4 + 
+                (balance_ratio * 0.3) + 
+                (1.0 if transaction.type in ['TRANSFER', 'CASH_OUT'] else 0.3) * 0.3,
+                1.0
+            )
+        else:
+            # Fallback: simplified feature extraction
+            features = {
+                'amount': transaction.amount,
+                'type': transaction.type,
+                'balance_ratio': transaction.amount / (transaction.oldbalanceOrg + 1.0) if transaction.oldbalanceOrg > 0 else 0
+            }
+            risk_score = min(transaction.amount / 10000.0, 1.0)
         
-        # Make prediction (mock implementation)
-        # In production, this would use the loaded model
-        risk_score = min(transaction.amount / 10000.0, 1.0)
         is_fraud = risk_score > 0.7
         
         if is_fraud:
@@ -190,23 +223,39 @@ async def predict(transaction: Transaction):
 
 @app.get("/metrics/model")
 async def model_metrics():
-    """Get current model performance metrics."""
+    """
+    Get current model performance metrics.
+    
+    Note: In production, these would be retrieved from model monitoring service
+    or MLflow tracking. Currently returns example metrics.
+    """
+    # In production, fetch from model monitoring service
+    # For now, return example metrics structure
     return {
         "accuracy": 0.95,
         "precision": 0.92,
         "recall": 0.96,
         "f1_score": 0.94,
-        "auc": 0.96
+        "auc": 0.96,
+        "note": "Example metrics - connect to model monitoring service for real-time metrics"
     }
 
 
 @app.get("/metrics/drift")
 async def drift_metrics():
-    """Get data drift metrics."""
+    """
+    Get data drift metrics.
+    
+    Note: In production, these would be retrieved from model monitoring service.
+    Currently returns example structure.
+    """
+    # In production, fetch from ComprehensiveModelMonitor
+    # For now, return example structure
     return {
         "drift_detected": False,
         "features_with_drift": [],
-        "last_check": time.time()
+        "last_check": time.time(),
+        "note": "Example metrics - connect to model monitoring service for real-time drift detection"
     }
 
 

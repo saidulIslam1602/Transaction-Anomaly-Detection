@@ -208,6 +208,20 @@ for feature in numeric_features[:5]:  # Show first 5 features
 # COMMAND ----------
 
 # MAGIC %md
+# MAGIC ## Alternative: Using dbt for Data Modeling
+# MAGIC 
+# MAGIC For more structured data modeling, you can also use dbt models:
+# MAGIC 
+# MAGIC ```bash
+# MAGIC # Run dbt models (if dbt is configured)
+# MAGIC dbt run --select int_transaction_features
+# MAGIC ```
+# MAGIC 
+# MAGIC See `dbt/README.md` for dbt setup and usage.
+
+# COMMAND ----------
+
+# MAGIC %md
 # MAGIC ## Log to MLflow
 
 # COMMAND ----------

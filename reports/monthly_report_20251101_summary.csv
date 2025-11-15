@@ -1,0 +1,9 @@
+metric,value
+report_period,November 2025
+report_type,monthly
+total_transactions,6362620
+total_volume,1144392944759.77
+avg_daily_transactions,212087.33333333334
+avg_daily_volume,38146431491.99233
+fraud_count,8213
+fraud_rate,0.12908204481801522

@@ -1,0 +1,10 @@
+metric,value
+report_date,2025-11-15
+report_type,daily
+total_transactions,6362620
+total_volume,1144392944759.77
+avg_transaction_amount,179861.90354913071
+fraud_count,8213
+fraud_rate,0.12908204481801522
+peak_hour,19
+peak_volume,7103846529.97

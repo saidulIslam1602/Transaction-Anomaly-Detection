@@ -1,0 +1,4 @@
+transaction_date,type,amount,nameOrig,nameDest,oldbalanceOrg,newbalanceOrig,oldbalanceDest,newbalanceDest
+2020-01-01 01:00:00,TRANSFER,1000,C1,M1,5000,4000,0,1000
+2020-01-01 02:00:00,PAYMENT,2000,C2,M2,6000,4000,0,2000
+2020-01-01 03:00:00,CASH_OUT,3000,C3,M3,7000,4000,0,3000

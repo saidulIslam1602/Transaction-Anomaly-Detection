@@ -68,7 +68,11 @@ mlruns/
 
 # Large files
 # Exclude large dataset files
-PS_20174392719_1491204439457_log.csv 
+PS_20174392719_1491204439457_log.csv
+data/transactions.csv
+data/transactions.zip
+data/*.csv
+data/*.zip 
 # Terraform binaries and state
 bin/
 terraform/.terraform/
@@ -76,3 +80,7 @@ terraform/.terraform.lock.hcl
 terraform/terraform.tfstate
 terraform/terraform.tfvars
 terraform/tfplan
+
+# Credentials (if edited directly)
+# Uncomment if you edit dbt/profiles.yml directly:
+# dbt/profiles.yml

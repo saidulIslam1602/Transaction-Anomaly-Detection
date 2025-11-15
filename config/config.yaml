@@ -260,11 +260,13 @@ real_time:
   prediction_latency_target_ms: 200
   
   kafka:
+    # Can be overridden with REAL_TIME_KAFKA_BOOTSTRAP_SERVERS env var
     bootstrap_servers: "localhost:9092"
     input_topic: "transactions"
     output_topic: "anomaly_scores"
   
   redis:
+    # Can be overridden with REAL_TIME_REDIS_HOST, REAL_TIME_REDIS_PORT env vars
     host: "localhost"
     port: 6379
     db: 0
@@ -282,12 +284,15 @@ notifications:
   enabled: false
   email:
     enabled: false
+    # Can be overridden with NOTIFICATIONS_EMAIL_SMTP_SERVER env var
     smtp_server: "smtp.example.com"
     smtp_port: 587
+    # Can be overridden with NOTIFICATIONS_EMAIL_FROM_ADDRESS env var
     from_address: "alerts@example.com"
   
   webhook:
     enabled: false
+    # Can be overridden with NOTIFICATIONS_WEBHOOK_URL env var
     url: "https://example.com/webhook"
 
 # Performance tuning

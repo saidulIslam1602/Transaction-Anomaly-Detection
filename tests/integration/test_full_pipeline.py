@@ -13,6 +13,10 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent / "src"))
 
 from services.feature_store import FeatureStore
 from mlops.model_monitoring import ComprehensiveModelMonitor
+from services.bi_export import BIExportService
+from services.business_metrics import BusinessMetricsCalculator
+import tempfile
+import shutil
 
 
 @pytest.mark.integration
@@ -67,4 +71,60 @@ class TestFullPipeline:
         # Should be under 100ms for real-time serving
         assert latency_ms < 100
         assert len(features) > 0
+    
+    def test_bi_export_integration(self, sample_dataframe):
+        """Test BI export integration with full pipeline."""
+        # Add required columns for BI export
+        sample_dataframe['high_risk_flag'] = np.random.choice([True, False], len(sample_dataframe), p=[0.1, 0.9])
+        sample_dataframe['final_risk_score'] = np.random.uniform(0, 10, len(sample_dataframe))
+        
+        # Create temporary directory for exports
+        temp_dir = tempfile.mkdtemp()
+        try:
+            export_service = BIExportService(output_dir=temp_dir)
+            
+            # Export transactions
+            transaction_file = export_service.export_transactions_for_bi(
+                sample_dataframe,
+                format='parquet'
+            )
+            assert Path(transaction_file).exists()
+            
+            # Export merchant metrics
+            merchant_file = export_service.export_merchant_metrics(
+                sample_dataframe,
+                format='parquet'
+            )
+            assert Path(merchant_file).exists()
+            
+            # Export all views
+            exports = export_service.export_all_views(sample_dataframe, formats=['parquet'])
+            assert len(exports) >= 3  # transactions, merchants, trends, performance
+            
+        finally:
+            shutil.rmtree(temp_dir)
+    
+    def test_business_metrics_integration(self, sample_dataframe):
+        """Test business metrics integration with full pipeline."""
+        # Add required columns
+        sample_dataframe['high_risk_flag'] = np.random.choice([True, False], len(sample_dataframe), p=[0.1, 0.9])
+        sample_dataframe['final_risk_score'] = np.random.uniform(0, 10, len(sample_dataframe))
+        
+        calculator = BusinessMetricsCalculator()
+        
+        # Calculate detection metrics
+        detection_metrics = calculator.calculate_fraud_detection_rate(sample_dataframe)
+        assert 'detection_rate_pct' in detection_metrics
+        assert 'false_positive_rate_pct' in detection_metrics
+        
+        # Calculate merchant metrics
+        merchant_metrics = calculator.calculate_merchant_risk_distribution(sample_dataframe)
+        assert not merchant_metrics.empty
+        assert 'merchant_id' in merchant_metrics.columns
+        
+        # Generate business summary
+        summary = calculator.generate_business_summary_report(sample_dataframe)
+        assert 'detection_metrics' in summary
+        assert 'efficiency_metrics' in summary
+        assert 'summary' in summary
 

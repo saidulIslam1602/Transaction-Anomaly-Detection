@@ -1,0 +1,93 @@
+{
+  "report_period": "November 2025",
+  "report_type": "monthly",
+  "total_transactions": 6362620,
+  "total_volume": 1144392944759.77,
+  "avg_daily_transactions": 212087.33333333334,
+  "avg_daily_volume": 38146431491.99233,
+  "fraud_count": 8213,
+  "fraud_rate": 0.12908204481801522,
+  "weekly_breakdown": [
+    {
+      "week": 0,
+      "transaction_count": 1926356,
+      "total_volume": 309011485720.43
+    },
+    {
+      "week": 1,
+      "transaction_count": 2855487,
+      "total_volume": 550289021068.09
+    },
+    {
+      "week": 2,
+      "transaction_count": 1282183,
+      "total_volume": 234158057508.32
+    },
+    {
+      "week": 3,
+      "transaction_count": 231992,
+      "total_volume": 39091724657.14
+    },
+    {
+      "week": 4,
+      "transaction_count": 66602,
+      "total_volume": 11842655805.79
+    }
+  ],
+  "user_insights": {
+    "total_users": 6353307,
+    "avg_transactions_per_user": 1.0014658507766112,
+    "top_users": [
+      {
+        "user_id": "C1065307291",
+        "transaction_count": 3,
+        "total_volume": 113479.28
+      },
+      {
+        "user_id": "C1462946854",
+        "transaction_count": 3,
+        "total_volume": 166791.43
+      },
+      {
+        "user_id": "C1530544995",
+        "transaction_count": 3,
+        "total_volume": 490535.09
+      },
+      {
+        "user_id": "C1677795071",
+        "transaction_count": 3,
+        "total_volume": 244735.37999999998
+      },
+      {
+        "user_id": "C1784010646",
+        "transaction_count": 3,
+        "total_volume": 436700.25
+      },
+      {
+        "user_id": "C1832548028",
+        "transaction_count": 3,
+        "total_volume": 313665.83
+      },
+      {
+        "user_id": "C1902386530",
+        "transaction_count": 3,
+        "total_volume": 763712.79
+      },
+      {
+        "user_id": "C1976208114",
+        "transaction_count": 3,
+        "total_volume": 511130.35
+      },
+      {
+        "user_id": "C1999539787",
+        "transaction_count": 3,
+        "total_volume": 290555.01
+      },
+      {
+        "user_id": "C2051359467",
+        "transaction_count": 3,
+        "total_volume": 89313.36
+      }
+    ]
+  }
+}

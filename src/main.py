@@ -3,11 +3,20 @@ import argparse
 import logging
 import pandas as pd
 import numpy as np
-import mlflow
+import matplotlib
+matplotlib.use('Agg')  # Non-interactive backend for headless environments
 import matplotlib.pyplot as plt
 import seaborn as sns
 from datetime import datetime
 from typing import Dict, List, Tuple, Any, Optional
+
+# Optional MLflow import (graceful degradation)
+try:
+    import mlflow
+    MLFLOW_AVAILABLE = True
+except (ImportError, Exception) as e:
+    MLFLOW_AVAILABLE = False
+    # Don't log here as logger might not be set up yet
 
 # Import project modules
 from data.preprocessor import TransactionPreprocessor
@@ -106,8 +115,10 @@ class TransactionAnomalyDetectionSystem:
         self.visualizer = AMLVisualizer()
         
         # Set up MLflow tracking
-        if mlflow_tracking_uri:
+        if mlflow_tracking_uri and MLFLOW_AVAILABLE:
             mlflow.set_tracking_uri(mlflow_tracking_uri)
+        elif mlflow_tracking_uri and not MLFLOW_AVAILABLE:
+            logger.warning("MLflow tracking URI provided but MLflow is not available. Tracking disabled.")
         
         logger.info(f"Transaction Anomaly Detection System initialized with data from {data_path}")
     
@@ -205,6 +216,9 @@ class TransactionAnomalyDetectionSystem:
             # Get feature importances
             feature_imp = self.anomaly_detector.feature_importances.get('xgboost')
             if feature_imp is not None:
+                # Convert dict to DataFrame if needed
+                if isinstance(feature_imp, dict):
+                    feature_imp = pd.DataFrame(list(feature_imp.items()), columns=['feature', 'importance'])
                 imp_file = os.path.join(self.output_dir, 'feature_importance.png')
                 self.visualizer.plot_feature_importance(feature_imp, save_path=imp_file)
             

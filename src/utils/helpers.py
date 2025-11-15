@@ -72,8 +72,25 @@ def save_results(results: Dict,
         results: Dictionary of results to save
         output_file: File to save results to (JSON format)
     """
+    import numpy as np
+    
+    def convert_to_serializable(obj):
+        """Convert numpy types to native Python types for JSON serialization."""
+        if isinstance(obj, (np.integer, np.int64, np.int32)):
+            return int(obj)
+        elif isinstance(obj, (np.floating, np.float64, np.float32)):
+            return float(obj)
+        elif isinstance(obj, np.ndarray):
+            return obj.tolist()
+        elif isinstance(obj, dict):
+            return {k: convert_to_serializable(v) for k, v in obj.items()}
+        elif isinstance(obj, (list, tuple)):
+            return [convert_to_serializable(item) for item in obj]
+        return obj
+    
+    serializable_results = convert_to_serializable(results)
     with open(output_file, 'w') as f:
-        json.dump(results, f, indent=4)
+        json.dump(serializable_results, f, indent=4)
     
     logger.info(f"Results saved to {output_file}")
 

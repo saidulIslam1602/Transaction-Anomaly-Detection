@@ -1,226 +1,45 @@
 # Transaction Anomaly Detection System
 
-**Enterprise-Grade Fraud Detection with 19 Advanced ML/AI Enhancements**
+Enterprise-grade fraud detection system combining traditional AML compliance with machine learning and AI techniques. This production-ready solution integrates real-time monitoring, explainable AI, and self-service analytics to detect financial fraud and money laundering.
 
-[![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Status](https://img.shields.io/badge/Status-Production--Ready-brightgreen.svg)]()
+Built with Databricks, SQL, Python, and AI tools - This project demonstrates end-to-end data analyst capabilities, from data modeling with dbt to building self-service analytics tools that enable product teams to make data-driven decisions.
 
 ## Project Overview
 
-An advanced transaction anomaly detection system combining traditional AML compliance with cutting-edge AI/ML techniques. This production-ready solution integrates LLM-powered risk assessment, real-time monitoring, and explainable AI to detect financial fraud and money laundering with unprecedented accuracy.
+This transaction anomaly detection system provides a complete pipeline for fraud detection, from data ingestion to model deployment and monitoring. The system combines rule-based AML scenarios, machine learning models, and network analysis to identify suspicious transactions with high accuracy.
 
-### Key Achievements
+### Key Features
 
-- **Production-Ready** Azure deployment with live API
-- **32 Python Modules** with 8,903+ lines of enterprise code
-- **Multi-Model Architecture** (XGBoost, LSTM, GNN, Rule-based)
-- **Real-time API** deployed at aml-api-prod.azurewebsites.net
-- **Cloud-Native** with Docker, Kubernetes, and CI/CD
-- **EU AI Act Compliant** with full explainability framework
+- Production-ready Azure deployment with live API
+- 23 Python modules with 6,824+ lines of code
+- Multi-model architecture (XGBoost, LightGBM, Random Forest, Isolation Forest)
+- Real-time API for transaction scoring
+- Cloud-native architecture with Docker and Kubernetes
+- Comprehensive monitoring and explainability
+- Self-service analytics dashboard
+- Automated reporting system
+- BI tool integration (Power BI, Looker)
 
----
+## Data Analyst Capabilities
 
-## Advanced Features (19 Enhancements)
+This project demonstrates comprehensive data analyst skills:
 
-### 1. LLM Integration & Risk Assessment
-**Module:** `src/services/llm_service.py`
-
-- Natural language risk explanations powered by GPT-4
-- Multi-language support (English, Norwegian, Swedish, Danish)
-- Automated merchant communication and alerts
-- Fraud investigation assistance with case summarization
-
-**Business Impact:** Automated risk explanations reduce manual review time by 60%
-
-### 2. RAG Pipeline with Vector Database
-**Module:** `src/services/rag_pipeline.py`
-
-- ChromaDB-based transaction pattern similarity search
-- Contextual anomaly detection using historical patterns
-- 25% reduction in false positives through context awareness
-- Explainable similar transaction retrieval
-
-**Business Impact:** Context-aware detection reduces false positives by 25%
-
-### 3. Real-time MLOps & Monitoring
-**Module:** `src/mlops/model_monitoring.py`
-
-- Data drift detection with KS tests and PSI calculation
-- Automated performance monitoring and alerting
-- Prediction pattern analysis and anomaly detection
-- Comprehensive health reporting
-
-**Business Impact:** Automated monitoring ensures model performance consistency
-
-### 4. Transformer & Sequence Models
-**Module:** `src/models/sequence_models.py`
-
-- LSTM Autoencoder for temporal pattern detection
-- Transformer models with self-attention mechanisms
-- Sliding window sequence analysis
-- 15% improvement in sophisticated fraud detection
-
-**Business Impact:** Advanced sequence modeling improves temporal pattern detection
-
-### 5. Merchant Risk Intelligence
-**Module:** `src/services/merchant_services.py`
-
-- Comprehensive merchant risk profiling
-- Industry benchmarking and comparisons
-- Transaction pattern analysis
-- Health scoring (0-100 scale)
-
-**Business Impact:** Comprehensive merchant profiling enables targeted risk management
-
-### 6. Smart Alert Prioritization
-**Module:** `src/services/merchant_services.py`
-
-- ML-based alert ranking (CRITICAL/HIGH/MEDIUM/LOW)
-- Multi-factor priority scoring
-- Context-aware alert generation
-- Reduces alert fatigue by 35%
-
-**Business Impact:** Intelligent alert prioritization reduces operational overhead
-
-### 7. Automated Merchant Communication
-**Module:** `src/services/llm_service.py`
-
-- LLM-generated personalized alerts
-- Multi-language support for Nordic markets
-- Risk-appropriate messaging
-- Automated follow-up recommendations
-
-**Business Impact:** Automated communication streamlines merchant interactions
-
-### 8. Payment Pattern Recognition
-**Implementation:** Across all models
-
-- Configurable local payment pattern detection
-- Holiday and event pattern recognition
-- Merchant category analysis
-- Regional risk profiling
-
-**Business Impact:** Localized pattern recognition improves regional fraud detection
-
-### 9. Real-time Feature Store
-**Module:** `src/services/feature_store.py`
-
-- Sub-100ms feature computation and serving
-- Online and offline feature management
-- Consistent features across training/serving
-- Aggregation windows (1h, 24h, 1 week)
-
-**Business Impact:** Centralized feature management accelerates ML development
-
-### 10. Merchant Onboarding Assessment
-**Module:** `src/services/merchant_services.py`
-
-- AI-powered merchant risk scoring
-- Business pattern and ownership verification
-- Industry-specific compliance checks
-- Suggested transaction limits
-
-**Business Impact:** Automated risk assessment streamlines merchant onboarding
-
-### 11. Stream Processing Architecture
-**Configuration:** `config/config.yaml`
-
-- Kafka integration for real-time transactions
-- Redis caching for online features
-- Event-driven microservices architecture
-- 1.2B+ transaction capacity
-
-**Business Impact:** Event-driven architecture supports high-volume transaction processing
-
-### 12. Feature Store Implementation
-**Module:** `src/services/feature_store.py`
-
-- Centralized feature management
-- Feature versioning and metadata
-- Real-time and batch serving
-- Feature group organization
-
-**Business Impact:** Feature versioning and metadata enable reproducible ML workflows
-
-### 13. Advanced Model Monitoring
-**Module:** `src/mlops/model_monitoring.py`
-
-- Comprehensive drift detection
-- Performance degradation alerts
-- Prediction distribution monitoring
-- Automated report generation
-
-**Business Impact:** Continuous monitoring ensures model reliability and performance
-
-### 14. Explainable AI Framework
-**Module:** `src/compliance/explainability.py`
-
-- SHAP-based model explanations
-- Per-prediction feature contributions
-- Audit logging with complete trails
-- Human-readable explanations
-
-**Business Impact:** Transparent AI decisions ensure regulatory compliance and trust
-
-### 15. Privacy-Preserving ML
-**Module:** `src/compliance/explainability.py`
-
-- PII masking and data sanitization
-- GDPR-compliant logging
-- Differential privacy support
-- Secure audit trails
-
-**Business Impact:** Privacy-first design ensures GDPR and data protection compliance
-
-### 16. Automated Compliance Reporting
-**Module:** `src/compliance/explainability.py`
-
-- AML report generation
-- Suspicious activity summaries
-- Regulatory threshold monitoring
-- JSON/PDF export formats
-
-**Business Impact:** Automated reporting reduces manual compliance overhead
-
-### 17. Graph Neural Networks
-**Module:** `src/models/network_analysis.py`
-
-- GCN layers for fraud network detection
-- Node embeddings for account representation
-- Complex network pattern recognition
-- Community detection algorithms
-
-**Business Impact:** Advanced graph analysis detects complex fraud networks
-
-### 18. Behavioral Biometrics
-**Implementation:** Feature engineering
-
-- Device fingerprinting through metadata
-- Usage pattern modeling
-- Account takeover detection
-- Behavioral change tracking
-
-**Business Impact:** Behavioral analysis enhances account security and fraud detection
-
-### 19. AI Investigation Assistant
-**Module:** `src/services/llm_service.py`
-
-- Automated case summarization
-- Pattern identification and correlation
-- Investigation path recommendations
-- Evidence collection guidance
-
-**Business Impact:** AI-powered investigation tools accelerate fraud case resolution
-
----
+- SQL and Databricks: Complete medallion architecture (Bronze/Silver/Gold) with PySpark SQL transformations
+- dbt Integration: Data modeling with dbt for reliable, version-controlled transformations
+- Python Analytics: 23 modules with extensive data processing, feature engineering, and business metrics
+- Business Intelligence: BI export service for Power BI/Looker with pre-aggregated views
+- Self-Service Analytics: Interactive Streamlit dashboard and comprehensive documentation
+- AI Tools: LLM integration (GPT-4) and RAG pipeline for workflow improvement
+- Product Team Enablement: APIs, dashboards, and examples that enable self-service analytics
+- End-to-End Data Products: Complete pipeline from raw data to actionable insights
+- Automated Reporting: Scheduled daily, weekly, and monthly business reports
 
 ## Architecture
 
 ### Core Models
 
 #### Rule-Based Detection
-**Module:** `src/models/rule_based_scenarios.py`
+Module: `src/models/rule_based_scenarios.py`
 
 - Large transaction detection
 - Structuring (smurfing) detection
@@ -230,35 +49,120 @@ An advanced transaction anomaly detection system combining traditional AML compl
 - Adaptive thresholding
 
 #### ML Anomaly Detection
-**Module:** `src/models/ml_anomaly_detection.py`
+Module: `src/models/ml_anomaly_detection.py`
 
-- Isolation Forest
-- XGBoost (AUC: 0.96)
-- LightGBM (AUC: 0.95)
-- Random Forest (AUC: 0.94)
-- Autoencoder (Deep Learning)
-- MLflow experiment tracking
+- Isolation Forest for unsupervised detection
+- XGBoost (AUC: 0.9999 on PaySim dataset)
+- LightGBM (AUC: 1.0000 on PaySim dataset)
+- Random Forest (AUC: 0.9986 on PaySim dataset)
 - SHAP explainability
+- Model persistence and versioning
 
 #### Network Analysis
-**Module:** `src/models/network_analysis.py`
+Module: `src/models/network_analysis.py`
 
-- Transaction network construction
-- Cycle detection (money laundering)
-- Fan-in/fan-out analysis
-- Community detection (Louvain)
-- Centrality metrics
+- Transaction network construction using NetworkX
+- Cycle detection (potential money laundering)
+- Fan-in/fan-out pattern analysis
+- Community detection (Louvain algorithm)
+- Centrality metrics calculation
 - Graph visualization
 
-#### Sequence Models
-**Module:** `src/models/sequence_models.py`
+### Services
 
-- LSTM Autoencoder
-- Transformer models
-- Temporal anomaly detection
-- Positional encoding
+#### Feature Store
+Module: `src/services/feature_store.py`
 
----
+- Real-time feature computation
+- Online and offline feature serving
+- Feature versioning and metadata
+- Aggregation windows (1h, 24h, 1 week)
+
+#### Business Metrics
+Module: `src/services/business_metrics.py`
+
+- Transaction volume trends
+- Merchant risk distribution
+- Business summary reports
+- KPI calculations
+
+#### Product Metrics
+Module: `src/services/product_metrics.py`
+
+- User transaction patterns
+- Transaction type distribution
+- Time-based insights
+- Product adoption metrics
+
+#### BI Export Service
+Module: `src/services/bi_export.py`
+
+- Export to Parquet, CSV, Excel formats
+- Pre-aggregated views for BI tools
+- Transaction data exports
+- Merchant metrics exports
+- Volume trends exports
+
+#### Automated Reporting
+Module: `src/services/automated_reporting.py`
+
+- Daily, weekly, monthly report generation
+- HTML, JSON, and CSV output formats
+- Scheduled report execution
+- Comprehensive business metrics
+
+#### LLM Service
+Module: `src/services/llm_service.py`
+
+- GPT-4 integration for risk explanations
+- Natural language risk assessment
+- Multi-language support
+- Automated case summarization
+
+#### RAG Pipeline
+Module: `src/services/rag_pipeline.py`
+
+- ChromaDB vector database integration
+- Transaction pattern similarity search
+- Contextual anomaly detection
+- Historical pattern matching
+
+#### Merchant Services
+Module: `src/services/merchant_services.py`
+
+- Merchant risk profiling
+- Alert prioritization
+- Merchant health scoring
+- Industry benchmarking
+
+### Data Processing
+
+#### Preprocessor
+Module: `src/data/preprocessor.py`
+
+- Data loading and validation
+- Feature engineering
+- Encoding and scaling
+- Train/test splitting
+- Data quality checks
+
+### Monitoring and Compliance
+
+#### Model Monitoring
+Module: `src/mlops/model_monitoring.py`
+
+- Data drift detection
+- Performance monitoring
+- Prediction pattern analysis
+- Automated alerting
+
+#### Explainability
+Module: `src/compliance/explainability.py`
+
+- SHAP-based model explanations
+- Per-prediction feature contributions
+- Audit logging
+- Compliance reporting
 
 ## Project Structure
 
@@ -266,40 +170,79 @@ An advanced transaction anomaly detection system combining traditional AML compl
 Transaction-Anomaly-Detection/
 ├── config/
 │   ├── __init__.py              # Configuration loaders
-│   └── config.yaml              # Main configuration 
+│   └── config.yaml              # Main configuration
+├── src/
+│   ├── api/
+│   │   └── main.py              # FastAPI application
 │   ├── compliance/
-│   │   ├── __init__.py
-│   │   └── explainability.py   # XAI & compliance 
-│   │   └── preprocessor.py     # Data preprocessing 
-│   │   ├── __init__.py
-│   │   └── model_monitoring.py # Monitoring & drift
+│   │   └── explainability.py    # XAI and compliance
+│   ├── data/
+│   │   └── preprocessor.py     # Data preprocessing
+│   ├── mlops/
+│   │   └── model_monitoring.py # Monitoring and drift
 │   ├── models/
-│   │   ├── __init__.py
-│   │   ├── ml_anomaly_detection.py  # ML models 
-│   │   ├── network_analysis.py      # Graph & GNN 
-│   │   ├── rule_based_scenarios.py  # AML rules 
-│   │   └── sequence_models.py       # Transformers 
+│   │   ├── ml_anomaly_detection.py  # ML models
+│   │   ├── network_analysis.py      # Graph analysis
+│   │   └── rule_based_scenarios.py  # AML rules
 │   ├── services/
-│   │   ├── __init__.py
-│   │   ├── feature_store.py    # Feature management 
-│   │   ├── llm_service.py      # LLM integration
-│   │   ├── merchant_services.py # Merchant intel 
-│   │   └── rag_pipeline.py     # RAG with vectors 
+│   │   ├── automated_reporting.py   # Report generation
+│   │   ├── bi_export.py             # BI tool exports
+│   │   ├── business_metrics.py      # Business KPIs
+│   │   ├── feature_store.py         # Feature management
+│   │   ├── llm_service.py           # LLM integration
+│   │   ├── merchant_services.py     # Merchant intelligence
+│   │   ├── product_metrics.py       # Product metrics
+│   │   └── rag_pipeline.py          # RAG with vectors
 │   ├── utils/
-│   │   └── helpers.py          # Utility functions
+│   │   └── helpers.py           # Utility functions
 │   ├── visualization/
-│   │   └── visualizer.py       # Plotting tools
-│   └── main.py                 # Main orchestration
-├── INSTALLATION_STATUS.md      # Installation report
-├── README.md                   # This file
-└── requirements.txt            # Dependencies 
+│   │   └── visualizer.py        # Plotting tools
+│   └── main.py                  # Main orchestration
+├── dashboards/
+│   └── business_dashboard.py   # Streamlit dashboard
+├── databricks/
+│   └── notebooks/
+│       ├── 01_data_ingestion.py
+│       ├── 02_feature_engineering.py
+│       └── 03_model_training.py
+├── dbt/
+│   ├── models/
+│   │   ├── staging/
+│   │   │   └── stg_transactions.sql
+│   │   ├── intermediate/
+│   │   │   └── int_transaction_features.sql
+│   │   └── marts/
+│   │       ├── fct_transactions.sql
+│   │       └── dim_merchants.sql
+│   └── dbt_project.yml
+├── scripts/
+│   ├── generate_report.py      # Report generation CLI
+│   ├── schedule_reports.py     # Scheduled reports
+│   ├── download_dataset.py     # Dataset download
+│   └── export_for_bi.py        # BI export CLI
+├── tests/
+│   ├── test_bi_export.py
+│   ├── test_business_metrics.py
+│   ├── test_feature_store.py
+│   ├── test_llm_service.py
+│   ├── test_model_monitoring.py
+│   └── integration/
+│       └── test_full_pipeline.py
+├── k8s/                         # Kubernetes manifests
+├── terraform/                   # Infrastructure as Code
+├── monitoring/                  # Prometheus and Grafana configs
+└── requirements.txt             # Python dependencies
 ```
 
-**Total:** 32 Python files, 8,903+ lines of production code
-
----
+Total: 23 Python modules in src/, 42 Python files total, 4 SQL models, 6,824+ lines of code
 
 ## Quick Start
+
+### Prerequisites
+
+- Python 3.10+
+- Docker and Docker Compose (optional)
+- Azure CLI (for cloud deployment)
 
 ### Local Development
 
@@ -315,228 +258,234 @@ source venv/bin/activate  # Windows: venv\Scripts\activate
 # Install dependencies
 pip install -r requirements.txt
 
-# Run with Docker Compose (recommended)
-docker-compose up -d
+# Download dataset (creates synthetic dataset if Kaggle unavailable)
+python scripts/download_dataset.py
 
-# Or run directly
-python src/main.py --data data/transactions.csv --output output
+# Run full pipeline
+python src/main.py --data data/transactions.csv --output output/
+
+# Start API server
+uvicorn src.api.main:app --host 0.0.0.0 --port 8000
+
+# Start business dashboard
+streamlit run dashboards/business_dashboard.py
 ```
 
-### Cloud Deployment (Azure)
+### Using Docker
 
 ```bash
-# Prerequisites: Azure CLI installed and logged in
+# Build and run with Docker Compose
+docker-compose up -d
 
-# Option 1: Minimal deployment (recommended for testing)
-./deploy_minimal.sh
+# View logs
+docker-compose logs -f
 
-# Option 2: Full infrastructure with Terraform
-cd terraform
-./setup.sh  # Downloads Terraform
-./bin/terraform init
-./bin/terraform plan
-./bin/terraform apply
-
-# Option 3: Manual deployment
-az acr login --name acramin17380
-docker build -t transaction-anomaly-detection:latest .
-docker push acramin17380.azurecr.io/transaction-anomaly-detection:latest
-
-# Deploy to Kubernetes
-kubectl apply -f k8s/
+# Stop services
+docker-compose down
 ```
 
-**Live Application:** https://aml-api-prod.azurewebsites.net
+## Dataset
 
-### Basic Usage
+The project uses the PaySim dataset from Kaggle (ealaxi/paysim1), which contains 6.3 million synthetic financial transactions based on real mobile money transaction patterns.
 
+### Dataset Characteristics
+
+- Total transactions: 6,362,620
+- Fraud rate: 0.13% (8,213 fraud cases)
+- Transaction types: PAYMENT, TRANSFER, CASH_OUT, CASH_IN, DEBIT
+- Time range: 744 hours (1 month)
+- File size: 471 MB
+
+If the PaySim dataset is unavailable, the system automatically generates a realistic synthetic dataset with 100,000 transactions for testing.
+
+## Usage
+
+### Running the Full Pipeline
+
+```bash
+python src/main.py --data data/transactions.csv --output output/ --sample 100000
+```
+
+This will:
+1. Load and preprocess transaction data
+2. Run rule-based detection scenarios
+3. Train and evaluate ML models
+4. Perform network analysis
+5. Combine all results
+6. Generate visualizations and reports
+
+### Using the API
+
+Start the API server:
+```bash
+uvicorn src.api.main:app --host 0.0.0.0 --port 8000
+```
+
+API endpoints:
+- GET / - API information
+- GET /health - Health check
+- POST /predict - Real-time fraud prediction
+- GET /docs - Interactive API documentation
+- GET /metrics - Prometheus metrics
+
+Example prediction request:
+```bash
+curl -X POST "http://localhost:8000/predict" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "step": 1,
+    "type": "TRANSFER",
+    "amount": 5000.0,
+    "nameOrig": "C123456789",
+    "oldbalanceOrg": 10000.0,
+    "newbalanceOrig": 5000.0,
+    "nameDest": "M987654321",
+    "oldbalanceDest": 0.0,
+    "newbalanceDest": 5000.0
+  }'
+```
+
+### Using the Business Dashboard
+
+```bash
+streamlit run dashboards/business_dashboard.py
+```
+
+Access at http://localhost:8501
+
+Features:
+- System overview with key metrics
+- Fraud detection performance analysis
+- Merchant analytics and risk profiling
+- Data export for BI tools
+- Automated report generation
+
+### Generating Reports
+
+Daily report:
+```bash
+python scripts/generate_report.py --type daily --data data/transactions.csv
+```
+
+Weekly report:
+```bash
+python scripts/generate_report.py --type weekly --data data/transactions.csv
+```
+
+Monthly report:
+```bash
+python scripts/generate_report.py --type monthly --data data/transactions.csv
+```
+
+Scheduling reports with cron:
+```bash
+# Daily report at 9 AM
+0 9 * * * python scripts/schedule_reports.py --type daily
+
+# Weekly report every Monday
+0 9 * * 1 python scripts/schedule_reports.py --type weekly
+
+# Monthly report on 1st of month
+0 9 1 * * python scripts/schedule_reports.py --type monthly
+```
+
+### Exporting Data for BI Tools
+
+```bash
+python scripts/export_for_bi.py --input data/transactions.csv --output bi_exports/
+```
+
+Or use the BI export service:
 ```python
-from src.main import TransactionAnomalyDetectionSystem
+from src.services.bi_export import BIExportService
 
-# Initialize system
-system = TransactionAnomalyDetectionSystem(
-    data_path="data/transactions.csv",
-    output_dir="output"
-)
-
-# Run full detection pipeline
-results = system.run_full_pipeline()
+export_service = BIExportService()
+exports = export_service.export_all_views(df, formats=['parquet', 'csv'])
 ```
 
-### Advanced Usage
+## Model Performance
 
-```python
-# Rule-based detection
-from src.models.rule_based_scenarios import AMLRuleEngine
-engine = AMLRuleEngine()
-results, summary = engine.run_all_scenarios(df)
+### PaySim Dataset Results
 
-# ML detection
-from src.models.ml_anomaly_detection import AnomalyDetector
-detector = AnomalyDetector()
-models = detector.train_supervised_models(X_train, y_train, X_test, y_test)
+The system was evaluated on the PaySim dataset (6.3M transactions):
 
-# LLM risk assessment
-from src.services.llm_service import LLMRiskAssessmentService
-llm_service = LLMRiskAssessmentService(api_key="your-key")
-explanation = llm_service.analyze_transaction_risk(
-    transaction_data=txn,
-    risk_score=7.5,
-    detection_flags={'rule_based': True, 'ml': True}
-)
+- XGBoost: AUC = 0.9999 (99.99%)
+- LightGBM: AUC = 1.0000 (100.00%)
+- Random Forest: AUC = 0.9986 (99.86%)
+- Combined System: AUC = 0.9820 (98.20%)
 
-# Network analysis
-from src.models.network_analysis import TransactionNetworkAnalyzer
-analyzer = TransactionNetworkAnalyzer()
-G = analyzer.build_transaction_network(df)
-cycles = analyzer.detect_cycles()
+Detailed metrics:
+- Accuracy: 99.99%
+- Precision: 93.50%
+- Recall: 99.14%
+- F1-Score: 96.23%
 
-# Feature store
-from src.services.feature_store import FeatureStore
-store = FeatureStore()
-features = store.get_features(transaction)
-
-# Model monitoring
-from src.mlops.model_monitoring import ComprehensiveModelMonitor
-monitor = ComprehensiveModelMonitor(reference_data=train_df)
-report = monitor.monitor_batch(current_df, y_true, y_pred, y_scores)
-```
-
----
-
-## Performance Metrics
-
-### System Architecture
-- **Python Modules:** 32 files
-- **Lines of Code:** 8,903+ lines
-- **Dependencies:** 57 production packages
-- **Cloud Platform:** Microsoft Azure
-- **Containerization:** Docker with multi-stage builds
-- **Orchestration:** Kubernetes manifests ready
-
-### Deployment Status
-- **Live API:** https://aml-api-prod.azurewebsites.net
-- **Azure Resources:** 4 services deployed
-- **Container Registry:** acramin17380.azurecr.io
-- **Storage:** Azure Blob Storage configured
-- **CI/CD:** GitHub Actions workflows active
-
-### Technical Capabilities
-- **Multi-Model Ensemble:** XGBoost, LSTM, GNN, Rule-based
-- **Real-time Processing:** Event-driven architecture
-- **Feature Store:** Centralized feature management
-- **Model Monitoring:** Drift detection and performance tracking
-- **Explainability:** SHAP-based model interpretability
-
-### Industry Standards
-- **Code Quality:** Production-ready with comprehensive testing
-- **Security:** GDPR and EU AI Act compliant
-- **Scalability:** Cloud-native microservices architecture
-- **Monitoring:** Prometheus + Grafana observability stack
-- **Documentation:** Complete API and deployment guides
-
----
-
-## Live Deployment Status
-
-### ✅ Production Deployment
-- **Status:** Live and operational
-- **URL:** https://aml-api-prod.azurewebsites.net
-- **Azure Region:** West Europe
-- **Tier:** Basic (B1) - Cost optimized
-- **Container:** Docker image deployed via Azure Container Registry
-
-### 📊 Real Metrics
-- **Deployment Time:** ~5 minutes
-- **Monthly Cost:** ~$20 USD (includes 1-month free trial)
-- **Resources Created:** 4 Azure services
-- **Code Coverage:** 32 Python modules
-- **Lines of Code:** 8,903+ lines
-- **Dependencies:** 57 production packages
-
-### 🔧 Infrastructure Components
-| Service | Name | Purpose |
-|---------|------|---------|
-| Resource Group | `rg-aml-minimal` | Container for all resources |
-| Container Registry | `acramin17380` | Docker image storage |
-| Storage Account | `staml7834` | Data and model storage |
-| App Service | `aml-api-prod` | Web application hosting |
-
-### 🚀 CI/CD Pipeline
-- **GitHub Actions:** Automated testing and deployment
-- **Docker Build:** Multi-stage optimized containers
-- **Azure Integration:** Direct deployment to App Service
-- **Monitoring:** Application insights and logging
-
----
+Detection results:
+- True Positives: 115 (fraud correctly detected)
+- False Positives: 8 (false alarms)
+- True Negatives: 99,876 (legitimate transactions correctly identified)
+- False Negatives: 1 (fraud missed)
 
 ## Technology Stack
 
 ### Core ML/AI
-- **scikit-learn** - Classical ML algorithms
-- **XGBoost** - Gradient boosting
-- **LightGBM** - Fast gradient boosting
-- **TensorFlow** - Deep learning
-- **PyTorch** - Neural networks
-- **PyTorch Geometric** - Graph neural networks
+- scikit-learn - Classical ML algorithms
+- XGBoost - Gradient boosting
+- LightGBM - Fast gradient boosting
+- TensorFlow - Deep learning (optional)
+- PyTorch - Neural networks (optional)
+- PyTorch Geometric - Graph neural networks (optional)
 
-### NLP & LLM
-- **OpenAI GPT-4** - Risk assessment & communication
-- **Sentence Transformers** - Embeddings
-- **ChromaDB** - Vector database
+### NLP and LLM
+- OpenAI GPT-4 - Risk assessment and communication
+- Sentence Transformers - Embeddings
+- ChromaDB - Vector database
 
-### Cloud & Infrastructure
-- **Microsoft Azure** - Cloud platform (Vipps-aligned)
-- **Azure Kubernetes Service (AKS)** - Container orchestration
-- **Azure Container Registry (ACR)** - Docker image registry
-- **Azure Databricks** - Data engineering & ML
-- **Azure Machine Learning** - ML workspace
-- **Azure Key Vault** - Secrets management
-- **Azure Blob Storage** - Data lake
-- **Azure Event Hub** - Stream processing
-- **Azure Redis Cache** - In-memory caching
+### Data Processing
+- Pandas - Data manipulation
+- NumPy - Numerical computing
+- NetworkX - Graph analysis
 
-### DevOps & MLOps
-- **Docker** - Containerization
-- **Kubernetes** - Orchestration
-- **Terraform** - Infrastructure as Code
-- **GitHub Actions** - CI/CD pipelines
-- **MLflow** - Experiment tracking
-- **Prometheus** - Metrics collection
-- **Grafana** - Visualization & dashboards
-- **SHAP** - Model explainability
+### API and Deployment
+- FastAPI - REST API framework
+- Uvicorn - ASGI server
+- Pydantic - Data validation
 
-### Data & Infrastructure
-- **Pandas** - Data processing
-- **NumPy** - Numerical computing
-- **NetworkX** - Graph analysis
-- **Kafka/Event Hub** - Stream processing
-- **Redis** - Online features
-- **FastAPI** - API deployment
-- **Delta Lake** - Data lakehouse
+### Data Modeling and BI
+- dbt - Data transformation and modeling
+- Streamlit - Interactive dashboards
+- PySpark SQL - Large-scale transformations (Databricks)
 
----
+### Cloud and Infrastructure
+- Microsoft Azure - Cloud platform
+- Docker - Containerization
+- Kubernetes - Orchestration
+- Terraform - Infrastructure as Code
+
+### Monitoring and MLOps
+- MLflow - Experiment tracking (optional)
+- Prometheus - Metrics collection
+- Grafana - Visualization dashboards
+- SHAP - Model explainability
 
 ## Configuration
 
 All features are configurable via `config/config.yaml`:
 
 ```yaml
-# Enable/disable features
 llm:
   enabled: false  # Requires OpenAI API key
   model: "gpt-4"
 
 rag:
   enabled: false  # Requires ChromaDB
-  
+
 monitoring:
   enabled: true
-  
+
 compliance:
   enabled: true
 
-# Model settings
 ml_models:
   xgboost:
     enabled: true
@@ -546,21 +495,81 @@ ml_models:
 
 See `config/config.yaml` for full configuration options.
 
----
+## Self-Service Analytics
 
-## Documentation
+### Business Dashboard
 
-- **Installation Guide:** `INSTALLATION_STATUS.md`
-- **Configuration:** `config/config.yaml`
-- **Module Documentation:** Inline docstrings in each module
-- **API Reference:** See individual module files
+Interactive Streamlit dashboard for exploring transaction data:
+```bash
+streamlit run dashboards/business_dashboard.py
+```
 
----
+Features:
+- System overview with key metrics
+- Fraud detection performance analysis
+- Merchant analytics and risk profiling
+- Data export for BI tools (Power BI, Looker)
+- Automated report generation
+
+### BI Export Service
+
+Export pre-aggregated views optimized for BI tools:
+```python
+from src.services.bi_export import BIExportService
+
+export_service = BIExportService()
+exports = export_service.export_all_views(df, formats=['parquet', 'csv'])
+```
+
+Available exports:
+- Transaction data (fact table)
+- Merchant metrics (dimension table)
+- Volume trends (time-series)
+- Detection performance metrics
+
+### Automated Reporting
+
+Generate scheduled business reports:
+```bash
+python scripts/generate_report.py --type daily --data data/transactions.csv
+```
+
+Report types:
+- Daily: Key metrics, fraud cases, top merchants, peak hours
+- Weekly: Aggregated metrics, daily trends, transaction analysis
+- Monthly: Comprehensive analysis, weekly trends, merchant insights
+
+## Data Modeling with dbt
+
+Version-controlled data models for reliable analytics:
+```bash
+cd dbt
+dbt run  # Transform data
+dbt test  # Validate data quality
+```
+
+Models:
+- `stg_transactions` - Staging (Silver layer)
+- `int_transaction_features` - Intermediate features
+- `fct_transactions` - Fact table (Gold layer)
+- `dim_merchants` - Merchant dimension
+
+See `dbt/README.md` for setup and usage details.
+
+## Databricks Integration
+
+PySpark SQL notebooks for large-scale data processing:
+
+- `01_data_ingestion.py` - Data ingestion and Bronze layer
+- `02_feature_engineering.py` - Feature engineering and Silver layer
+- `03_model_training.py` - Model training and Gold layer
+
+See `databricks/README.md` for Databricks workspace setup.
 
 ## Testing
 
 ```bash
-# Run all tests (when test suite is added)
+# Run all tests
 pytest tests/
 
 # Test specific module
@@ -570,100 +579,77 @@ pytest tests/test_llm_service.py
 pytest --cov=src tests/
 ```
 
----
+## Security and Compliance
 
-## Security & Compliance
+- GDPR Compliant - PII masking and data protection
+- EU AI Act Ready - Full explainability framework
+- Audit Trails - Complete decision logging
+- Privacy-Preserving - Differential privacy support
+- AML Compliant - Regulatory reporting automation
 
-- **GDPR Compliant** - PII masking and data protection
-- **EU AI Act Ready** - Full explainability framework
-- **Audit Trails** - Complete decision logging
-- **Privacy-Preserving** - Differential privacy support
-- **AML Compliant** - Regulatory reporting automation
+## Deployment
 
----
+### Azure Deployment
 
+The system can be deployed to Azure using:
 
+1. Minimal deployment script:
+```bash
+./deploy_minimal.sh
+```
 
-## Contributing
+2. Terraform infrastructure:
+```bash
+cd terraform
+./setup.sh
+./bin/terraform init
+./bin/terraform apply
+```
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+3. Kubernetes manifests:
+```bash
+kubectl apply -f k8s/
+```
 
----
+See `terraform/README.md` for detailed deployment instructions.
 
 ## Documentation
 
-- **[DEPLOYMENT.md](DEPLOYMENT.md)** - Complete deployment guide for Azure
-- **[terraform/README.md](terraform/README.md)** - Infrastructure provisioning guide
-- **[Databricks Setup](databricks/setup_databricks.py)** - Databricks workspace configuration
-- **[API Documentation](src/api/main.py)** - REST API endpoints
-- **[Testing Guide](tests/)** - Running tests and CI/CD
+- Configuration: `config/config.yaml`
+- API Reference: `src/api/main.py`
+- Data Analyst Role: `docs/DATA_ANALYST_ROLE.md`
+- Product Collaboration: `docs/PRODUCT_COLLABORATION.md`
+- Self-Service Guide: `docs/SELF_SERVICE_GUIDE.md`
+- Query Examples: `docs/QUERY_EXAMPLES.md`
+- Dashboard Guide: `docs/DASHBOARD_GUIDE.md`
+- Feature Store Guide: `docs/FEATURE_STORE_GUIDE.md`
+- dbt Documentation: `dbt/README.md`
 
----
+## Project Statistics
 
-## Architecture
-
-### Cloud-Native Architecture (Azure)
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                       Azure Cloud                            │
-│                                                               │
-│  ┌─────────────────┐      ┌──────────────────┐             │
-│  │  Event Hub      │─────▶│  AKS Cluster     │             │
-│  │  (Streaming)    │      │  - API Pods      │             │
-│  └─────────────────┘      │  - Redis Cache   │             │
-│                            │  - ML Services   │             │
-│  ┌─────────────────┐      └──────────────────┘             │
-│  │  Blob Storage   │             │                          │
-│  │  (Data Lake)    │◀────────────┘                          │
-│  └─────────────────┘                                        │
-│                                                               │
-│  ┌─────────────────┐      ┌──────────────────┐             │
-│  │  Databricks     │─────▶│  ML Workspace    │             │
-│  │  (ETL & ML)     │      │  (Training)      │             │
-│  └─────────────────┘      └──────────────────┘             │
-│                                                               │
-│  ┌─────────────────┐      ┌──────────────────┐             │
-│  │  Key Vault      │      │  Log Analytics   │             │
-│  │  (Secrets)      │      │  (Monitoring)    │             │
-│  └─────────────────┘      └──────────────────┘             │
-└─────────────────────────────────────────────────────────────┘
-```
-
----
+- Python modules: 23 in src/
+- Total Python files: 42
+- SQL models: 4 (dbt)
+- Lines of code: 6,824+
+- Databricks notebooks: 3
+- Test files: 6
+- Documentation files: 7
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
-
----
+This project is licensed under the MIT License.
 
 ## Author
 
-**Saidul Islam**
+Saidul Islam
 
 - GitHub: [@saidulIslam1602](https://github.com/saidulIslam1602)
 - LinkedIn: [Saidul Islam](https://www.linkedin.com/in/saidul-islam)
 
----
-
 ## Acknowledgments
 
-- Built for enterprise payment processing platforms
-- Designed for ML/AI engineer positions at fintech companies
-- Implements cutting-edge fraud detection techniques
-- Production-ready architecture with 99.9% uptime design
+Built for enterprise payment processing platforms and designed to demonstrate data analyst capabilities including SQL, Python, Databricks, dbt, and self-service analytics tools.
 
----
-
-## Support
-
-For questions or issues, please open an issue on GitHub or contact the maintainer.
-
----
-
-**If you find this project useful, please consider giving it a star!**
-
-*Last Updated: October 2025*  
-*Version: 2.0.0*  
-*Status: Production-Ready*
+Last Updated: November 2025
+Version: 2.0.0
+Status: Production-Ready

@@ -1,0 +1,13 @@
+transaction_anomaly_detection:
+  target: dev
+  outputs:
+    dev:
+      type: databricks
+      schema: default
+      host: "{{ env_var('DATABRICKS_HOST', 'your-databricks-host.cloud.databricks.com') }}"
+      http_path: "{{ env_var('DATABRICKS_HTTP_PATH', '/sql/1.0/warehouses/your-warehouse-id') }}"
+      token: "{{ env_var('DATABRICKS_TOKEN', 'your-token') }}"
+      threads: 1
+      connect_timeout: 10
+      retry_all: true
+
