@@ -213,6 +213,17 @@ class TransactionAnomalyDetectionSystem:
             # Train supervised models
             supervised_models = self.anomaly_detector.train_supervised_models(X_train, y_train, X_test, y_test)
             
+            # Train advanced deep learning models
+            if ADVANCED_MODELS_AVAILABLE:
+                try:
+                    advanced_models = self.anomaly_detector.train_advanced_models(X_train, y_train, X_test, y_test)
+                    # Add advanced models to supervised models
+                    for name, model_info in advanced_models.items():
+                        supervised_models[name] = model_info
+                    logger.info(f"Trained {len(advanced_models)} advanced models")
+                except Exception as e:
+                    logger.warning(f"Advanced models training failed: {e}")
+            
             # Get feature importances
             feature_imp = self.anomaly_detector.feature_importances.get('xgboost')
             if feature_imp is not None:
@@ -229,14 +240,30 @@ class TransactionAnomalyDetectionSystem:
             
             for model_name, model_info in supervised_models.items():
                 model = model_info['model']
-                threshold = model_info['best_threshold']
                 
-                # Get predictions
-                y_scores[model_name] = model.predict_proba(X_full)[:, 1]
-                y_preds[model_name] = (y_scores[model_name] > threshold).astype(int)
+                # Handle different model types
+                if model_name in ['autoencoder', 'lstm_autoencoder', 'transformer']:
+                    # Advanced models return (errors, flags)
+                    try:
+                        errors, flags = model.predict(X_full)
+                        # Convert errors to scores (inverse relationship)
+                        y_scores[model_name] = 1.0 / (errors + 1e-10)
+                        y_scores[model_name] = (y_scores[model_name] - y_scores[model_name].min()) / (y_scores[model_name].max() - y_scores[model_name].min() + 1e-10)
+                        y_preds[model_name] = flags
+                    except Exception as e:
+                        logger.warning(f"Prediction failed for {model_name}: {e}")
+                        continue
+                else:
+                    # Traditional models
+                    threshold = model_info.get('best_threshold', 0.5)
+                    y_scores[model_name] = model.predict_proba(X_full)[:, 1]
+                    y_preds[model_name] = (y_scores[model_name] > threshold).astype(int)
                 
                 # Save model
-                save_model(model, model_name, output_dir=os.path.join(self.output_dir, 'models'))
+                try:
+                    save_model(model, model_name, output_dir=os.path.join(self.output_dir, 'models'))
+                except Exception as e:
+                    logger.warning(f"Could not save {model_name} model: {e}")
             
             # Save ensemble prediction
             ensemble_scores = sum(y_scores.values()) / len(y_scores)

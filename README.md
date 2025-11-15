@@ -12,7 +12,7 @@ This transaction anomaly detection system provides a complete pipeline for fraud
 
 - Production-ready Azure deployment with live API
 - 23 Python modules with 6,824+ lines of code
-- Multi-model architecture (XGBoost, LightGBM, Random Forest, Isolation Forest)
+- Multi-model architecture (XGBoost, LightGBM, Random Forest, Isolation Forest, Autoencoder, LSTM, Transformer)
 - Real-time API for transaction scoring
 - Cloud-native architecture with Docker and Kubernetes
 - Comprehensive monitoring and explainability
@@ -57,6 +57,24 @@ Module: `src/models/ml_anomaly_detection.py`
 - Random Forest (AUC: 0.9986 on PaySim dataset)
 - SHAP explainability
 - Model persistence and versioning
+
+#### Advanced Deep Learning Models
+Module: `src/models/advanced_models.py`
+
+- **Autoencoder**: Unsupervised anomaly detection using reconstruction error
+  - Encoder-decoder architecture with bottleneck
+  - Detects transactions with high reconstruction error
+  - Suitable for detecting novel fraud patterns
+  
+- **LSTM Autoencoder**: Sequential pattern detection
+  - Captures temporal dependencies in transaction sequences
+  - Detects anomalies in transaction patterns over time
+  - Ideal for detecting structured fraud schemes
+  
+- **Transformer**: Self-attention based anomaly detection
+  - Multi-head attention mechanism
+  - Captures complex relationships in transaction sequences
+  - State-of-the-art performance for sequence modeling
 
 #### Network Analysis
 Module: `src/models/network_analysis.py`
