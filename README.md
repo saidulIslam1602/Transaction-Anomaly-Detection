@@ -644,7 +644,7 @@ This project is licensed under the MIT License.
 Saidul Islam
 
 - GitHub: [@saidulIslam1602](https://github.com/saidulIslam1602)
-- LinkedIn: [Saidul Islam](https://www.linkedin.com/in/saidul-islam)
+- LinkedIn: [Saidul Islam](https://www.linkedin.com/in/mdsaidulislam1602/)
 
 ## Acknowledgments
 
