@@ -224,6 +224,49 @@ class TransactionAnomalyDetectionSystem:
                 except Exception as e:
                     logger.warning(f"Advanced models training failed: {e}")
             
+            # Run model diagnostics for overfitting/underfitting detection
+            try:
+                from models.model_diagnostics import ModelDiagnostics
+                diagnostics = ModelDiagnostics()
+                diagnostic_results = {}
+                
+                logger.info("Running model diagnostics...")
+                for model_name, model_info in supervised_models.items():
+                    model = model_info.get('model')
+                    if model is not None:
+                        try:
+                            diag = diagnostics.check_overfitting(
+                                model, X_train, y_train, X_test, y_test, model_name
+                            )
+                            diagnostic_results[model_name] = diag
+                        except Exception as e:
+                            logger.warning(f"Diagnostics failed for {model_name}: {e}")
+                
+                # Save diagnostic report
+                if diagnostic_results:
+                    report = diagnostics.generate_diagnostic_report(diagnostic_results)
+                    report_path = os.path.join(self.output_dir, 'model_diagnostics.txt')
+                    with open(report_path, 'w') as f:
+                        f.write(report)
+                    logger.info(f"Model diagnostics saved to {report_path}")
+                    
+                    # Save diagnostic results as JSON
+                    save_results(diagnostic_results, os.path.join(self.output_dir, 'model_diagnostics.json'))
+                    
+                    # Log summary
+                    logger.info("=" * 80)
+                    logger.info("MODEL DIAGNOSTICS SUMMARY")
+                    logger.info("=" * 80)
+                    for model_name, diag in diagnostic_results.items():
+                        if 'overfitting_status' in diag:
+                            status = diag['overfitting_status']
+                            severity = diag.get('overfitting_severity', 'unknown')
+                            auc_gap = diag.get('performance_gaps', {}).get('auc', 'N/A')
+                            logger.info(f"{model_name}: {status} ({severity}) - AUC Gap: {auc_gap}")
+                    logger.info("=" * 80)
+            except Exception as e:
+                logger.warning(f"Model diagnostics failed: {e}")
+            
             # Get feature importances
             feature_imp = self.anomaly_detector.feature_importances.get('xgboost')
             if feature_imp is not None:
@@ -425,15 +468,21 @@ class TransactionAnomalyDetectionSystem:
         }
         
         weights = {
-            'rule_based': 3.0,  # Higher weight for rule-based (regulatory focus)
-            'ml': 2.0,          # Medium weight for ML predictions
+            'rule_based': 1.0,  # Reduced weight (rule-based is too aggressive)
+            'ml': 3.0,          # Higher weight for ML (best performance)
             'network': 2.0       # Medium weight for network analysis
         }
         
         combined_df['final_risk_score'] = calculate_risk_score(flags, weights)
         
         # Flag high-risk transactions
-        combined_df['high_risk_flag'] = combined_df['final_risk_score'] >= 2.0
+        # Use adaptive threshold based on score distribution to avoid flagging everything
+        score_median = combined_df['final_risk_score'].median()
+        score_std = combined_df['final_risk_score'].std()
+        # Threshold: median + 1.5 * std (more conservative)
+        adaptive_threshold = max(2.0, score_median + 1.5 * score_std)
+        combined_df['high_risk_flag'] = combined_df['final_risk_score'] >= adaptive_threshold
+        logger.info(f"Using adaptive threshold: {adaptive_threshold:.2f} (median: {score_median:.2f}, std: {score_std:.2f})")
         
         # Generate alert report
         alert_report = generate_alert_report(
@@ -521,10 +570,29 @@ class TransactionAnomalyDetectionSystem:
         
         # Plot ROC curves
         if 'auc' in rule_metrics and rule_metrics['auc'] is not None:
+            # Normalize scores to 0-1 range for proper curve plotting
+            # Rule-based score normalization
+            rule_score = combined_df['rule_based_score'].values
+            if rule_score.max() > rule_score.min():
+                rule_score_norm = (rule_score - rule_score.min()) / (rule_score.max() - rule_score.min())
+            else:
+                # If constant, use flag as score
+                rule_score_norm = combined_df['rule_based_flag'].astype(float).values
+            
+            # ML score is already normalized (0-1)
+            ml_score_norm = combined_df['ml_score'].values
+            
+            # Combined score normalization (weighted sum needs normalization)
+            combined_score = combined_df['final_risk_score'].values
+            if combined_score.max() > combined_score.min():
+                combined_score_norm = (combined_score - combined_score.min()) / (combined_score.max() - combined_score.min())
+            else:
+                combined_score_norm = combined_df['high_risk_flag'].astype(float).values
+            
             scores = {
-                'Rule-based': combined_df['rule_based_score'].values,
-                'ML-based': combined_df['ml_score'].values,
-                'Combined': combined_df['final_risk_score'].values
+                'Rule-based': rule_score_norm,
+                'ML-based': ml_score_norm,
+                'Combined': combined_score_norm
             }
             
             self.visualizer.plot_roc_curves(
@@ -539,12 +607,23 @@ class TransactionAnomalyDetectionSystem:
                 save_path=os.path.join(self.output_dir, 'pr_curves.png')
             )
         
-        # Plot confusion matrix
+        # Plot confusion matrix - use ML-based predictions for accuracy
+        # (combined system is too aggressive due to rule-based flagging everything)
+        self.visualizer.plot_confusion_matrix(
+            combined_df['isFraud'].values,
+            combined_df['ml_flag'].values,  # Use ML predictions instead of combined
+            normalize=True,
+            title="Confusion Matrix (ML-based Model)",
+            save_path=os.path.join(self.output_dir, 'confusion_matrix.png')
+        )
+        
+        # Also create confusion matrix for combined system (for reference)
         self.visualizer.plot_confusion_matrix(
             combined_df['isFraud'].values,
             combined_df['high_risk_flag'].values,
             normalize=True,
-            save_path=os.path.join(self.output_dir, 'confusion_matrix.png')
+            title="Confusion Matrix (Combined System)",
+            save_path=os.path.join(self.output_dir, 'confusion_matrix_combined.png')
         )
         
         logger.info(f"System evaluation complete. Combined AUC: {combined_metrics.get('auc', 'N/A')}")

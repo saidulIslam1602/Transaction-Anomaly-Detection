@@ -1,0 +1,8 @@
+{
+    "total_transactions": 50000,
+    "rule_based_flags": 487,
+    "ml_flags": 96,
+    "network_flags": 2535,
+    "high_risk_flags": 2628,
+    "high_risk_percentage": 5.256
+}

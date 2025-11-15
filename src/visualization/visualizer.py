@@ -157,8 +157,8 @@ class AMLVisualizer:
         if save_path:
             plt.savefig(save_path, dpi=300, bbox_inches='tight')
             logger.info(f"Transaction distributions saved to {save_path}")
-            
-        plt.show()
+        
+        plt.close()  # Close figure to free memory
     
     def plot_correlation_matrix(self, 
                               df: pd.DataFrame,
@@ -197,8 +197,8 @@ class AMLVisualizer:
         if save_path:
             plt.savefig(save_path, dpi=300, bbox_inches='tight')
             logger.info(f"Correlation matrix saved to {save_path}")
-            
-        plt.show()
+        
+        plt.close()
     
     def plot_transaction_flows(self,
                              df: pd.DataFrame,
@@ -261,10 +261,16 @@ class AMLVisualizer:
         )
         
         if save_path:
-            fig.write_image(save_path, width=1200, height=800)
-            logger.info(f"Transaction flow diagram saved to {save_path}")
-            
-        fig.show()
+            try:
+                # Try to save as PNG (requires kaleido)
+                fig.write_image(save_path, width=1200, height=800)
+                logger.info(f"Transaction flow diagram saved to {save_path}")
+            except Exception as e:
+                # Fallback to HTML if kaleido not available
+                logger.warning(f"Could not save Plotly image as PNG: {e}. Saving as HTML instead.")
+                html_path = save_path.replace('.png', '.html')
+                fig.write_html(html_path)
+                logger.info(f"Transaction flow diagram saved to {html_path}")
     
     def plot_model_performance(self,
                               models_metrics: Dict[str, Dict[str, float]],
@@ -303,8 +309,8 @@ class AMLVisualizer:
         if save_path:
             plt.savefig(save_path, dpi=300, bbox_inches='tight')
             logger.info(f"Model performance comparison saved to {save_path}")
-            
-        plt.show()
+        
+        plt.close()
     
     def plot_roc_curves(self,
                        y_true: np.ndarray,
@@ -345,8 +351,8 @@ class AMLVisualizer:
         if save_path:
             plt.savefig(save_path, dpi=300, bbox_inches='tight')
             logger.info(f"ROC curves saved to {save_path}")
-            
-        plt.show()
+        
+        plt.close()
     
     def plot_precision_recall_curves(self,
                                    y_true: np.ndarray,
@@ -384,8 +390,8 @@ class AMLVisualizer:
         if save_path:
             plt.savefig(save_path, dpi=300, bbox_inches='tight')
             logger.info(f"Precision-recall curves saved to {save_path}")
-            
-        plt.show()
+        
+        plt.close()
     
     def plot_feature_importance(self,
                               feature_importance: pd.DataFrame,
@@ -419,8 +425,8 @@ class AMLVisualizer:
         if save_path:
             plt.savefig(save_path, dpi=300, bbox_inches='tight')
             logger.info(f"Feature importance plot saved to {save_path}")
-            
-        plt.show()
+        
+        plt.close()
     
     def plot_scenario_results(self,
                             summary_df: pd.DataFrame,
@@ -461,8 +467,8 @@ class AMLVisualizer:
         if save_path:
             plt.savefig(save_path, dpi=300, bbox_inches='tight')
             logger.info(f"Scenario results plot saved to {save_path}")
-            
-        plt.show()
+        
+        plt.close()
     
     def plot_anomaly_scores(self,
                           scores: np.ndarray,
@@ -502,8 +508,8 @@ class AMLVisualizer:
         if save_path:
             plt.savefig(save_path, dpi=300, bbox_inches='tight')
             logger.info(f"Anomaly scores plot saved to {save_path}")
-            
-        plt.show()
+        
+        plt.close()
     
     def plot_confusion_matrix(self,
                             y_true: np.ndarray,
@@ -524,15 +530,29 @@ class AMLVisualizer:
         from sklearn.metrics import confusion_matrix
         
         # Compute confusion matrix
+        # sklearn format: [[TN, FP], [FN, TP]]
+        # where rows = true labels (0=Normal, 1=Fraud), cols = predicted labels
         cm = confusion_matrix(y_true, y_pred)
         
+        # Debug: log the confusion matrix
+        logger.debug(f"Confusion matrix: {cm}")
+        logger.debug(f"y_true: {np.unique(y_true, return_counts=True)}")
+        logger.debug(f"y_pred: {np.unique(y_pred, return_counts=True)}")
+        
         if normalize:
-            cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+            # Normalize by row (each row sums to 1.0)
+            row_sums = cm.sum(axis=1, keepdims=True)
+            # Avoid division by zero
+            row_sums[row_sums == 0] = 1
+            cm = cm.astype('float') / row_sums
             fmt = '.2f'
         else:
             fmt = 'd'
         
         plt.figure(figsize=(8, 6))
+        # Plot confusion matrix
+        # Rows (y-axis) = True labels: [Normal, Fraud/Suspicious]
+        # Columns (x-axis) = Predicted labels: [Normal, Fraud/Suspicious]
         sns.heatmap(
             cm, 
             annot=True, 
@@ -541,18 +561,23 @@ class AMLVisualizer:
             cbar=False,
             square=True,
             xticklabels=['Normal', 'Fraud/Suspicious'],
-            yticklabels=['Normal', 'Fraud/Suspicious']
+            yticklabels=['Normal', 'Fraud/Suspicious'],
+            vmin=0.0,
+            vmax=1.0 if normalize else None
         )
         
         plt.ylabel('True Label')
         plt.xlabel('Predicted Label')
         plt.title(title)
         
+        # Ensure tight layout
+        plt.tight_layout()
+        
         if save_path:
             plt.savefig(save_path, dpi=300, bbox_inches='tight')
             logger.info(f"Confusion matrix saved to {save_path}")
-            
-        plt.show()
+        
+        plt.close()
         
     def plot_shap_summary(self,
                         shap_values: np.ndarray,
@@ -568,20 +593,27 @@ class AMLVisualizer:
             max_display: Maximum number of features to display
             save_path: Path to save the figure
         """
-        import shap
+        try:
+            import shap
+        except ImportError:
+            logger.warning("SHAP not available. Skipping SHAP plot.")
+            return
         
-        plt.figure(figsize=self.figsize)
-        shap.summary_plot(
-            shap_values, 
-            features,
-            max_display=max_display,
-            show=False
-        )
-        
-        plt.title("SHAP Feature Importance")
-        
-        if save_path:
-            plt.savefig(save_path, dpi=300, bbox_inches='tight')
-            logger.info(f"SHAP summary plot saved to {save_path}")
+        try:
+            plt.figure(figsize=self.figsize)
+            shap.summary_plot(
+                shap_values, 
+                features,
+                max_display=max_display,
+                show=False
+            )
             
-        plt.show() 
+            plt.title("SHAP Feature Importance")
+            
+            if save_path:
+                plt.savefig(save_path, dpi=300, bbox_inches='tight')
+                logger.info(f"SHAP summary plot saved to {save_path}")
+        except Exception as e:
+            logger.warning(f"Error creating SHAP plot: {e}")
+        finally:
+            plt.close() 

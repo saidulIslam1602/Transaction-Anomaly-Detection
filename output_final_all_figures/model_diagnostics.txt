@@ -1,0 +1,30 @@
+================================================================================
+MODEL DIAGNOSTIC REPORT
+================================================================================
+
+Model: random_forest
+--------------------------------------------------------------------------------
+Status: Mild Overfitting (low severity)
+
+Performance Gaps (Train - Test):
+  ACCURACY: +0.0007
+  PRECISION: +0.0000
+  RECALL: +0.0750
+  F1_SCORE: +0.0400
+  AUC: +0.0300
+
+Metrics Comparison:
+  Metric          Train      Test       Gap       
+  ---------------------------------------------
+  accuracy        0.9998     0.9990     +0.0007
+  precision       1.0000     1.0000     +0.0000
+  recall          0.9750     0.9000     +0.0750
+  f1_score        0.9873     0.9474     +0.0400
+  auc             1.0000     0.9700     +0.0300
+
+Recommendations:
+  1. Slight increase in regularization
+  2. Monitor performance on validation set
+  3. Consider ensemble methods
+
+================================================================================
