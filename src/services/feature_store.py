@@ -51,17 +51,22 @@ class FeatureStore:
     training (batch) and inference (real-time) scenarios.
     """
     
-    def __init__(self, storage_path: str = "./feature_store"):
+    def __init__(self, storage_path: str = "./feature_store", config: Optional[Dict] = None):
         """
         Initialize feature store.
         
         Args:
             storage_path: Path to store feature data
+            config: Configuration dictionary with feature store settings
         """
         self.storage_path = storage_path
         self.features = {}
         self.feature_groups = {}
         self.online_cache = {}
+        
+        # Load cache size from config
+        self.config = config or {}
+        self.cache_size_limit = self.config.get('feature_store', {}).get('online_cache_size', 1000)
         
         logger.info(f"Feature store initialized at {storage_path}")
     
@@ -191,9 +196,9 @@ class FeatureStore:
         
         self.online_cache[account_id].append(transaction)
         
-        # Keep cache size manageable
-        if len(self.online_cache[account_id]) > 1000:
-            self.online_cache[account_id] = self.online_cache[account_id][-1000:]
+        # Keep cache size manageable using config limit
+        if len(self.online_cache[account_id]) > self.cache_size_limit:
+            self.online_cache[account_id] = self.online_cache[account_id][-self.cache_size_limit:]
         
         return features
     

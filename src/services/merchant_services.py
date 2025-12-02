@@ -88,9 +88,41 @@ class MerchantRiskIntelligenceService:
     personalized recommendations for fraud prevention.
     """
     
-    def __init__(self):
-        """Initialize merchant risk intelligence service."""
+    def __init__(self, config: Optional[Dict] = None):
+        """
+        Initialize merchant risk intelligence service.
+        
+        Args:
+            config: Configuration dictionary with merchant services settings
+        """
         self.merchant_profiles = {}
+        self.config = config or {}
+        
+        # Load risk thresholds from config
+        risk_thresholds = self.config.get('merchant_services', {}).get('risk_thresholds', {})
+        self.high_risk_threshold = risk_thresholds.get('high_risk', 7.0)
+        self.medium_risk_threshold = risk_thresholds.get('medium_risk', 4.0)
+        
+        # Load recommendation thresholds
+        rec_config = self.config.get('merchant_services', {}).get('recommendations', {})
+        self.fraud_rate_threshold = rec_config.get('fraud_rate_threshold', 0.05)
+        self.risk_score_threshold = rec_config.get('risk_score_threshold', 6.0)
+        self.min_transactions_threshold = rec_config.get('min_transactions_threshold', 10)
+        
+        # Load health score parameters
+        health_config = self.config.get('merchant_services', {}).get('health_score', {})
+        self.health_base_score = health_config.get('base_score', 100.0)
+        self.health_fraud_multiplier = health_config.get('fraud_rate_multiplier', 500)
+        self.health_risk_threshold = health_config.get('risk_score_threshold', 5.0)
+        self.health_risk_penalty = health_config.get('risk_score_penalty', 10.0)
+        
+        # Load industry benchmarks
+        self.industry_benchmarks = self.config.get('business_metrics', {}).get('industry_benchmarks', {
+            'avg_fraud_rate': 0.02,
+            'avg_risk_score': 3.5,
+            'avg_transaction_amount': 5000.0
+        })
+        
         logger.info("Merchant risk intelligence service initialized")
     
     def create_merchant_profile(self,
@@ -133,10 +165,10 @@ class MerchantRiskIntelligenceService:
         
         profile = self.merchant_profiles[merchant_id]
         
-        # Calculate risk level
-        if profile.average_risk_score >= 7.0:
+        # Calculate risk level using config thresholds
+        if profile.average_risk_score >= self.high_risk_threshold:
             risk_level = 'HIGH'
-        elif profile.average_risk_score >= 4.0:
+        elif profile.average_risk_score >= self.medium_risk_threshold:
             risk_level = 'MEDIUM'
         else:
             risk_level = 'LOW'
@@ -176,17 +208,17 @@ class MerchantRiskIntelligenceService:
         """Generate personalized recommendations for merchant."""
         recommendations = []
         
-        if profile.fraud_rate > 0.05:
+        if profile.fraud_rate > self.fraud_rate_threshold:
             recommendations.append(
                 "High fraud rate detected. Consider implementing additional verification steps."
             )
         
-        if profile.average_risk_score > 6.0:
+        if profile.average_risk_score > self.risk_score_threshold:
             recommendations.append(
                 "Average risk score is elevated. Review high-risk transactions manually."
             )
         
-        if profile.total_transactions < 10:
+        if profile.total_transactions < self.min_transactions_threshold:
             recommendations.append(
                 "Limited transaction history. Monitor closely during initial period."
             )
@@ -200,15 +232,15 @@ class MerchantRiskIntelligenceService:
     
     def _calculate_health_score(self, profile: MerchantRiskProfile) -> float:
         """Calculate overall health score (0-100)."""
-        # Base score
-        health_score = 100.0
+        # Base score from config
+        health_score = self.health_base_score
         
-        # Deduct for fraud rate
-        health_score -= profile.fraud_rate * 500  # -50 for 10% fraud rate
+        # Deduct for fraud rate using config multiplier
+        health_score -= profile.fraud_rate * self.health_fraud_multiplier
         
-        # Deduct for high risk scores
-        if profile.average_risk_score > 5.0:
-            health_score -= (profile.average_risk_score - 5.0) * 10
+        # Deduct for high risk scores using config threshold and penalty
+        if profile.average_risk_score > self.health_risk_threshold:
+            health_score -= (profile.average_risk_score - self.health_risk_threshold) * self.health_risk_penalty
         
         # Ensure score is in valid range
         health_score = max(0.0, min(100.0, health_score))
@@ -233,13 +265,9 @@ class MerchantRiskIntelligenceService:
         
         profile = self.merchant_profiles[merchant_id]
         
-        # Default industry benchmarks
+        # Use provided industry stats or default from config
         if industry_stats is None:
-            industry_stats = {
-                'avg_fraud_rate': 0.02,
-                'avg_risk_score': 3.5,
-                'avg_transaction_amount': 5000.0
-            }
+            industry_stats = self.industry_benchmarks
         
         comparison = {
             'merchant_id': merchant_id,
@@ -273,9 +301,41 @@ class MerchantAlertPrioritization:
     Uses ML-based scoring to rank alerts by importance and actionability.
     """
     
-    def __init__(self):
-        """Initialize alert prioritization system."""
+    def __init__(self, config: Optional[Dict] = None):
+        """
+        Initialize alert prioritization system.
+        
+        Args:
+            config: Configuration dictionary with alert prioritization settings
+        """
         self.alert_history = []
+        self.config = config or {}
+        
+        # Load alert prioritization config
+        alert_config = self.config.get('merchant_services', {}).get('alert_prioritization', {})
+        
+        # Amount thresholds
+        amount_thresholds = alert_config.get('amount_thresholds', {})
+        self.amount_critical = amount_thresholds.get('critical', 10000)
+        self.amount_high = amount_thresholds.get('high', 5000)
+        self.amount_medium = amount_thresholds.get('medium', 1000)
+        
+        # Detection method scores
+        method_scores = alert_config.get('detection_method_scores', {})
+        self.rule_based_score = method_scores.get('rule_based', 15)
+        self.ml_score = method_scores.get('ml', 10)
+        self.network_score = method_scores.get('network', 12)
+        self.immediate_action_score = method_scores.get('immediate_action', 25)
+        
+        # Priority level thresholds
+        priority_levels = alert_config.get('priority_levels', {})
+        self.critical_threshold = priority_levels.get('critical', 80)
+        self.high_threshold = priority_levels.get('high', 60)
+        self.medium_threshold = priority_levels.get('medium', 40)
+        
+        # Fraud rate multiplier
+        self.fraud_rate_multiplier = alert_config.get('fraud_rate_multiplier', 50)
+        
         logger.info("Merchant alert prioritization initialized")
     
     def prioritize_alerts(self,
@@ -317,42 +377,42 @@ class MerchantAlertPrioritization:
         risk_score = alert.get('risk_score', 0)
         score += risk_score * 10
         
-        # Amount factor
+        # Amount factor using config thresholds
         amount = alert.get('amount', 0)
-        if amount > 10000:
+        if amount > self.amount_critical:
             score += 20
-        elif amount > 5000:
+        elif amount > self.amount_high:
             score += 10
-        elif amount > 1000:
+        elif amount > self.amount_medium:
             score += 5
         
         # Historical fraud involvement
         if merchant_context:
             fraud_rate = merchant_context.get('fraud_rate', 0)
-            score += fraud_rate * 50
+            score += fraud_rate * self.fraud_rate_multiplier
         
-        # Detection method factor
+        # Detection method factor using config scores
         detection_flags = alert.get('detection_flags', {})
         if detection_flags.get('rule_based'):
-            score += 15  # Rule-based has high weight
+            score += self.rule_based_score
         if detection_flags.get('ml'):
-            score += 10
+            score += self.ml_score
         if detection_flags.get('network'):
-            score += 12
+            score += self.network_score
         
         # Urgency factor
         if alert.get('requires_immediate_action'):
-            score += 25
+            score += self.immediate_action_score
         
         return score
     
     def _get_priority_level(self, priority_score: float) -> str:
-        """Convert priority score to level."""
-        if priority_score >= 80:
+        """Convert priority score to level using config thresholds."""
+        if priority_score >= self.critical_threshold:
             return 'CRITICAL'
-        elif priority_score >= 60:
+        elif priority_score >= self.high_threshold:
             return 'HIGH'
-        elif priority_score >= 40:
+        elif priority_score >= self.medium_threshold:
             return 'MEDIUM'
         else:
             return 'LOW'
@@ -365,8 +425,59 @@ class MerchantOnboardingRiskAssessment:
     Evaluates new merchants to identify high-risk accounts before approval.
     """
     
-    def __init__(self):
-        """Initialize onboarding risk assessment."""
+    def __init__(self, config: Optional[Dict] = None):
+        """
+        Initialize onboarding risk assessment.
+        
+        Args:
+            config: Configuration dictionary with onboarding settings
+        """
+        self.config = config or {}
+        
+        # Load onboarding config
+        onboard_config = self.config.get('merchant_services', {}).get('onboarding', {})
+        
+        # Risk score thresholds
+        risk_thresholds = onboard_config.get('risk_score_thresholds', {})
+        self.reject_threshold = risk_thresholds.get('reject', 60)
+        self.monitor_threshold = risk_thresholds.get('monitor', 40)
+        self.review_threshold = risk_thresholds.get('review', 20)
+        
+        # Business age thresholds and scores
+        age_thresholds = onboard_config.get('business_age_thresholds', {})
+        self.new_business_years = age_thresholds.get('new_business_years', 1)
+        self.young_business_years = age_thresholds.get('young_business_years', 3)
+        
+        age_scores = onboard_config.get('business_age_scores', {})
+        self.new_business_score = age_scores.get('new_business', 15)
+        self.young_business_score = age_scores.get('young_business', 10)
+        
+        # Industry risk scores
+        self.high_risk_industry_score = onboard_config.get('high_risk_industry_score', 30)
+        self.medium_risk_industry_score = onboard_config.get('medium_risk_industry_score', 15)
+        
+        # Other risk factor scores
+        self.ownership_not_verified_score = onboard_config.get('ownership_not_verified_score', 20)
+        self.not_registered_score = onboard_config.get('not_registered_score', 30)
+        self.high_limit_threshold = onboard_config.get('high_limit_threshold', 1000000)
+        self.high_limit_score = onboard_config.get('high_limit_score', 15)
+        self.high_risk_country_score = onboard_config.get('high_risk_country_score', 25)
+        self.enhanced_monitoring_country_score = onboard_config.get('enhanced_monitoring_country_score', 15)
+        
+        # Transaction limits
+        limits = onboard_config.get('transaction_limits', {})
+        self.limit_high_risk = limits.get('high_risk', 10000)
+        self.limit_medium_risk = limits.get('medium_risk', 50000)
+        self.limit_low_risk = limits.get('low_risk', 100000)
+        self.limit_very_low_risk = limits.get('very_low_risk', 500000)
+        
+        # Load high-risk industries and countries from merchant_services config
+        onboarding_assessment = self.config.get('merchant_services', {}).get('onboarding_assessment', {})
+        self.high_risk_industries = onboarding_assessment.get('high_risk_industries', [])
+        self.medium_risk_industries = onboarding_assessment.get('medium_risk_industries', [])
+        self.high_risk_countries = onboarding_assessment.get('high_risk_countries', [])
+        self.enhanced_monitoring_countries = onboarding_assessment.get('enhanced_monitoring_countries', [])
+        
         logger.info("Merchant onboarding risk assessment initialized")
     
     def assess_new_merchant(self,
@@ -385,94 +496,57 @@ class MerchantOnboardingRiskAssessment:
         risk_factors = []
         risk_score = 0
         
-        # Check business age
+        # Check business age using config thresholds
         business_age_years = business_info.get('years_in_operation', 0)
-        if business_age_years < 1:
-            risk_factors.append("New business (less than 1 year)")
-            risk_score += 15
-        elif business_age_years < 3:
-            risk_factors.append("Young business (less than 3 years)")
-            risk_score += 10
+        if business_age_years < self.new_business_years:
+            risk_factors.append(f"New business (less than {self.new_business_years} year)")
+            risk_score += self.new_business_score
+        elif business_age_years < self.young_business_years:
+            risk_factors.append(f"Young business (less than {self.young_business_years} years)")
+            risk_score += self.young_business_score
         
-        # Check business type (based on FinCEN and international AML standards)
-        high_risk_industries = [
-            'gambling', 'casino', 'betting', 'lottery',
-            'cryptocurrency', 'crypto', 'bitcoin', 'blockchain exchange',
-            'adult entertainment', 'adult', 'escort',
-            'forex', 'foreign exchange', 'money transfer', 'remittance',
-            'precious metals', 'jewelry', 'gold dealer',
-            'arms', 'weapons', 'ammunition',
-            'tobacco', 'vaping', 'e-cigarette',
-            'cannabis', 'marijuana', 'cbd',
-            'pawn shop', 'pawnbroker',
-            'cash intensive', 'atm operation',
-            'money service business', 'msb', 'check cashing'
-        ]
-        # Medium-risk industries requiring enhanced monitoring
-        medium_risk_industries = [
-            'real estate', 'property development',
-            'car dealer', 'auto sales', 'vehicle sales',
-            'art dealer', 'antique',
-            'nonprofit', 'charity', 'ngo',
-            'travel agency', 'tourism',
-            'import export', 'trading company',
-            'consulting', 'advisory services'
-        ]
-        
+        # Check business type (using config-loaded industries)
         industry = business_info.get('industry', '').lower()
-        if any(risky in industry for risky in high_risk_industries):
+        if any(risky in industry for risky in self.high_risk_industries):
             risk_factors.append(f"High-risk industry per AML standards: {industry}")
-            risk_score += 30
-        elif any(medium in industry for medium in medium_risk_industries):
+            risk_score += self.high_risk_industry_score
+        elif any(medium in industry for medium in self.medium_risk_industries):
             risk_factors.append(f"Medium-risk industry requiring enhanced monitoring: {industry}")
-            risk_score += 15
+            risk_score += self.medium_risk_industry_score
         
         # Check ownership structure
         if business_info.get('ownership_verified') == False:
             risk_factors.append("Ownership not verified")
-            risk_score += 20
+            risk_score += self.ownership_not_verified_score
         
         # Check registration information
         if not business_info.get('business_registered'):
             risk_factors.append("Business not properly registered")
-            risk_score += 30
+            risk_score += self.not_registered_score
         
         # Check requested transaction limits
         requested_limit = merchant_data.get('monthly_transaction_limit', 0)
-        if requested_limit > 1000000:
+        if requested_limit > self.high_limit_threshold:
             risk_factors.append("Very high transaction limit requested")
-            risk_score += 15
+            risk_score += self.high_limit_score
         
-        # Check geographical risk (based on FATF high-risk jurisdictions and AML standards)
-        # Note: This list should be regularly updated based on official FATF publications
-        high_risk_countries = [
-            'iran', 'north korea', 'myanmar', 'afghanistan', 'syria',
-            'yemen', 'zimbabwe', 'belarus', 'pakistan', 'uganda',
-            'south sudan', 'mali', 'mozambique', 'burkina faso',
-            'senegal', 'kenya', 'nicaragua', 'haiti', 'jamaica'
-        ]
-        # Additional monitoring jurisdictions (lower risk but require enhanced due diligence)
-        enhanced_monitoring_countries = [
-            'cayman islands', 'panama', 'uae', 'philippines',
-            'albania', 'barbados', 'mauritius', 'morocco'
-        ]
-        
+        # Check geographical risk (using config-loaded countries)
         country = business_info.get('country', '').lower()
-        if country in high_risk_countries:
+        if country in self.high_risk_countries:
             risk_factors.append(f"High-risk jurisdiction per FATF: {country}")
-            risk_score += 25
-        elif country in enhanced_monitoring_countries:
+            risk_score += self.high_risk_country_score
+        elif country in self.enhanced_monitoring_countries:
             risk_factors.append(f"Enhanced monitoring jurisdiction: {country}")
-            risk_score += 15
+            risk_score += self.enhanced_monitoring_country_score
         
-        # Determine risk level and recommendation
-        if risk_score >= 60:
+        # Determine risk level and recommendation using config thresholds
+        if risk_score >= self.reject_threshold:
             risk_level = 'HIGH'
             recommendation = 'REJECT or require additional verification'
-        elif risk_score >= 40:
+        elif risk_score >= self.monitor_threshold:
             risk_level = 'MEDIUM'
             recommendation = 'APPROVE with monitoring and lower limits'
-        elif risk_score >= 20:
+        elif risk_score >= self.review_threshold:
             risk_level = 'LOW'
             recommendation = 'APPROVE with standard monitoring'
         else:
@@ -494,15 +568,15 @@ class MerchantOnboardingRiskAssessment:
         return assessment
     
     def _suggest_transaction_limit(self, risk_score: int) -> int:
-        """Suggest appropriate transaction limit based on risk."""
-        if risk_score >= 60:
-            return 10000  # Low limit for high risk
-        elif risk_score >= 40:
-            return 50000  # Medium limit
-        elif risk_score >= 20:
-            return 100000  # Standard limit
+        """Suggest appropriate transaction limit based on risk using config values."""
+        if risk_score >= self.reject_threshold:
+            return self.limit_high_risk
+        elif risk_score >= self.monitor_threshold:
+            return self.limit_medium_risk
+        elif risk_score >= self.review_threshold:
+            return self.limit_low_risk
         else:
-            return 500000  # Higher limit for low risk
+            return self.limit_very_low_risk
     
     def _suggest_verifications(self, risk_factors: List[str]) -> List[str]:
         """Suggest additional verifications based on risk factors."""

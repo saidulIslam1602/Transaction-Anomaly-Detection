@@ -24,10 +24,19 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 try:
     from services.feature_store import FeatureStore
     from services.business_metrics import BusinessMetricsCalculator
+    from utils.helpers import load_config
     FEATURE_STORE_AVAILABLE = True
 except ImportError:
     FEATURE_STORE_AVAILABLE = False
     logger.warning("Feature store not available, using simplified feature extraction")
+
+# Load configuration
+try:
+    from utils.helpers import load_config
+    config = load_config()
+except Exception as e:
+    logger.warning(f"Could not load config: {e}")
+    config = {}
 
 # Create FastAPI app
 app = FastAPI(
@@ -74,13 +83,34 @@ feature_serving_latency = Histogram(
 # Instrument app with Prometheus
 Instrumentator().instrument(app).expose(app)
 
-# Initialize services
+# Initialize services with config
 if FEATURE_STORE_AVAILABLE:
-    feature_store = FeatureStore()
-    business_calc = BusinessMetricsCalculator()
+    feature_store = FeatureStore(config=config)
+    business_calc = BusinessMetricsCalculator(config=config)
 else:
     feature_store = None
     business_calc = None
+
+# Load API configuration
+api_config = config.get('api', {}).get('prediction', {})
+FRAUD_THRESHOLD = api_config.get('fraud_threshold', 0.7)
+DEFAULT_CONFIDENCE = api_config.get('default_confidence', 0.85)
+
+# Risk level thresholds
+risk_thresholds = api_config.get('risk_level_thresholds', {})
+RISK_CRITICAL = risk_thresholds.get('critical', 0.75)
+RISK_HIGH = risk_thresholds.get('high', 0.5)
+RISK_MEDIUM = risk_thresholds.get('medium', 0.25)
+
+# Risk calculation weights
+risk_calc = api_config.get('risk_calculation', {})
+AMOUNT_WEIGHT = risk_calc.get('amount_weight', 0.4)
+BALANCE_RATIO_WEIGHT = risk_calc.get('balance_ratio_weight', 0.3)
+TRANSACTION_TYPE_WEIGHT = risk_calc.get('transaction_type_weight', 0.3)
+AMOUNT_NORMALIZER = risk_calc.get('amount_normalizer', 10000.0)
+HIGH_RISK_TYPES = risk_calc.get('high_risk_types', ['TRANSFER', 'CASH_OUT'])
+HIGH_RISK_TYPE_SCORE = risk_calc.get('high_risk_type_score', 1.0)
+LOW_RISK_TYPE_SCORE = risk_calc.get('low_risk_type_score', 0.3)
 
 
 # Request/Response models
@@ -164,14 +194,15 @@ async def predict(transaction: Transaction):
         if feature_store:
             transaction_dict = transaction.dict()
             features = feature_store.compute_transaction_features(transaction_dict)
-            # Use feature-based risk calculation
+            # Use feature-based risk calculation with config values
             amount = transaction.amount
             balance_ratio = amount / (transaction.oldbalanceOrg + 1.0) if transaction.oldbalanceOrg > 0 else 0
-            # Simple risk scoring based on features (can be replaced with actual model)
+            # Risk scoring based on config weights
+            type_score = HIGH_RISK_TYPE_SCORE if transaction.type in HIGH_RISK_TYPES else LOW_RISK_TYPE_SCORE
             risk_score = min(
-                (amount / 10000.0) * 0.4 + 
-                (balance_ratio * 0.3) + 
-                (1.0 if transaction.type in ['TRANSFER', 'CASH_OUT'] else 0.3) * 0.3,
+                (amount / AMOUNT_NORMALIZER) * AMOUNT_WEIGHT + 
+                (balance_ratio * BALANCE_RATIO_WEIGHT) + 
+                (type_score * TRANSACTION_TYPE_WEIGHT),
                 1.0
             )
         else:
@@ -181,19 +212,19 @@ async def predict(transaction: Transaction):
                 'type': transaction.type,
                 'balance_ratio': transaction.amount / (transaction.oldbalanceOrg + 1.0) if transaction.oldbalanceOrg > 0 else 0
             }
-            risk_score = min(transaction.amount / 10000.0, 1.0)
+            risk_score = min(transaction.amount / AMOUNT_NORMALIZER, 1.0)
         
-        is_fraud = risk_score > 0.7
+        is_fraud = risk_score > FRAUD_THRESHOLD
         
         if is_fraud:
             fraud_detected.inc()
         
-        # Determine risk level
-        if risk_score >= 0.75:
+        # Determine risk level using config thresholds
+        if risk_score >= RISK_CRITICAL:
             risk_level = "CRITICAL"
-        elif risk_score >= 0.5:
+        elif risk_score >= RISK_HIGH:
             risk_level = "HIGH"
-        elif risk_score >= 0.25:
+        elif risk_score >= RISK_MEDIUM:
             risk_level = "MEDIUM"
         else:
             risk_level = "LOW"
@@ -207,7 +238,7 @@ async def predict(transaction: Transaction):
             is_fraud=is_fraud,
             risk_score=risk_score,
             risk_level=risk_level,
-            confidence=0.85,
+            confidence=DEFAULT_CONFIDENCE,
             explanation="Risk assessment based on amount and account patterns",
             recommendations=[
                 "Review transaction history",

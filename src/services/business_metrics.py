@@ -25,8 +25,20 @@ class BusinessMetricsCalculator:
     - Detection quality and impact
     """
     
-    def __init__(self):
-        """Initialize the business metrics calculator."""
+    def __init__(self, config: Optional[Dict] = None):
+        """
+        Initialize the business metrics calculator.
+        
+        Args:
+            config: Configuration dictionary with business metrics settings
+        """
+        self.config = config or {}
+        self.cost_per_alert_review = self.config.get('business_metrics', {}).get('cost_per_alert_review', 10.0)
+        self.industry_benchmarks = self.config.get('business_metrics', {}).get('industry_benchmarks', {
+            'avg_fraud_rate': 0.02,
+            'avg_risk_score': 3.5,
+            'avg_transaction_amount': 5000.0
+        })
         logger.info("Business metrics calculator initialized")
     
     def calculate_fraud_detection_rate(self,
@@ -178,9 +190,8 @@ class BusinessMetricsCalculator:
         total_alerts = df['high_risk_flag'].sum()
         total_transactions = len(df)
         
-        # Calculate cost metrics (assuming fixed costs per alert review)
-        cost_per_alert_review = 10.0  # Example: $10 per alert review
-        total_review_cost = total_alerts * cost_per_alert_review
+        # Calculate cost metrics (configurable cost per alert review)
+        total_review_cost = total_alerts * self.cost_per_alert_review
         
         # Calculate average detection time (if available)
         if 'detection_time_ms' in df.columns:

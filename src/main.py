@@ -87,7 +87,8 @@ class TransactionAnomalyDetectionSystem:
                  data_path: str,
                  output_dir: str = 'output',
                  mlflow_tracking_uri: Optional[str] = None,
-                 sample_size: Optional[int] = None):
+                 sample_size: Optional[int] = None,
+                 config: Optional[Dict] = None):
         """
         Initialize the system.
         
@@ -96,20 +97,26 @@ class TransactionAnomalyDetectionSystem:
             output_dir: Directory to save outputs
             mlflow_tracking_uri: URI for MLflow tracking server
             sample_size: Number of transactions to sample (for testing)
+            config: Configuration dictionary
         """
         self.data_path = data_path
         self.output_dir = output_dir
         self.sample_size = sample_size
+        self.config = config or {}
         
         # Create output directory if it doesn't exist
         os.makedirs(output_dir, exist_ok=True)
         
-        # Initialize components
-        self.preprocessor = TransactionPreprocessor()
+        # Get contamination from config
+        contamination = self.config.get('ml_models', {}).get('isolation_forest', {}).get('contamination', 0.01)
+        
+        # Initialize components with config
+        self.preprocessor = TransactionPreprocessor(config=self.config)
         self.rule_engine = AMLRuleEngine()
         self.anomaly_detector = AnomalyDetector(
-            contamination=0.01,
-            tracking_uri=mlflow_tracking_uri
+            contamination=contamination,
+            tracking_uri=mlflow_tracking_uri,
+            config=self.config
         )
         self.network_analyzer = TransactionNetworkAnalyzer()
         self.visualizer = AMLVisualizer()
@@ -137,11 +144,16 @@ class TransactionAnomalyDetectionSystem:
         # Preprocess data
         df = self.preprocessor.preprocess(df)
         
-        # Create a smaller balanced sample for model training
+        # Create a smaller balanced sample for model training using config
+        training_config = self.config.get('training', {}).get('sample_sizes', {})
+        n_normal = training_config.get('normal_transactions', 10000)
+        n_fraud = training_config.get('fraud_transactions', 10000)
+        total_sample_limit = training_config.get('total_sample_limit', 20000)
+        
         if 'isFraud' in df.columns:
-            sample_df = sample_transactions(df, n_normal=10000, n_fraud=10000)
+            sample_df = sample_transactions(df, n_normal=n_normal, n_fraud=n_fraud)
         else:
-            sample_df = df.sample(min(20000, len(df))) if len(df) > 20000 else df
+            sample_df = df.sample(min(total_sample_limit, len(df))) if len(df) > total_sample_limit else df
         
         logger.info(f"Data preprocessing complete. Full dataset: {len(df)} rows, Sample: {len(sample_df)} rows")
         
@@ -159,10 +171,11 @@ class TransactionAnomalyDetectionSystem:
         """
         logger.info("Running rule-based detection scenarios")
         
-        # Get high-risk accounts if fraud labels are available
+        # Get high-risk accounts if fraud labels are available using config
         high_risk_accounts = None
         if 'isFraud' in df.columns:
-            high_risk_accounts = get_high_risk_accounts(df, n_accounts=100)
+            account_limit = self.config.get('training', {}).get('high_risk_accounts_limit', 100)
+            high_risk_accounts = get_high_risk_accounts(df, n_accounts=account_limit)
         
         # Run all scenarios
         results_df, summary_df = self.rule_engine.run_all_scenarios(df, high_risk_accounts)
@@ -460,27 +473,37 @@ class TransactionAnomalyDetectionSystem:
         # Add network flags
         combined_df['network_flag'] = network_results['network_flags']
         
-        # Calculate final risk score
+        # Calculate final risk score using config weights
         flags = {
             'rule_based': combined_df['rule_based_flag'],
             'ml': combined_df['ml_flag'],
             'network': combined_df['network_flag']
         }
         
-        weights = {
-            'rule_based': 1.0,  # Reduced weight (rule-based is too aggressive)
-            'ml': 3.0,          # Higher weight for ML (best performance)
-            'network': 2.0       # Medium weight for network analysis
+        # Get weights from config
+        risk_scoring_config = self.config.get('risk_scoring', {})
+        weights = risk_scoring_config.get('weights', {
+            'rule_based': 1.0,
+            'ml_based': 3.0,
+            'network_based': 2.0
+        })
+        # Map keys for backwards compatibility
+        weights_mapped = {
+            'rule_based': weights.get('rule_based', 1.0),
+            'ml': weights.get('ml_based', 3.0),
+            'network': weights.get('network_based', 2.0)
         }
         
-        combined_df['final_risk_score'] = calculate_risk_score(flags, weights)
+        combined_df['final_risk_score'] = calculate_risk_score(flags, weights_mapped)
         
         # Flag high-risk transactions
         # Use adaptive threshold based on score distribution to avoid flagging everything
         score_median = combined_df['final_risk_score'].median()
         score_std = combined_df['final_risk_score'].std()
-        # Threshold: median + 1.5 * std (more conservative)
-        adaptive_threshold = max(2.0, score_median + 1.5 * score_std)
+        # Threshold: median + multiplier * std (from config)
+        threshold_multiplier = risk_scoring_config.get('adaptive_threshold_multiplier', 1.5)
+        high_risk_threshold = risk_scoring_config.get('high_risk_threshold', 2.0)
+        adaptive_threshold = max(high_risk_threshold, score_median + threshold_multiplier * score_std)
         combined_df['high_risk_flag'] = combined_df['final_risk_score'] >= adaptive_threshold
         logger.info(f"Using adaptive threshold: {adaptive_threshold:.2f} (median: {score_median:.2f}, std: {score_std:.2f})")
         
@@ -704,12 +727,16 @@ if __name__ == "__main__":
     # Parse command line arguments
     args = parse_args()
     
-    # Initialize the system
+    # Load configuration
+    config = load_config()
+    
+    # Initialize the system with config
     system = TransactionAnomalyDetectionSystem(
         data_path=args.data,
         output_dir=args.output,
         mlflow_tracking_uri=args.mlflow_uri,
-        sample_size=args.sample
+        sample_size=args.sample,
+        config=config
     )
     
     # Run the full pipeline

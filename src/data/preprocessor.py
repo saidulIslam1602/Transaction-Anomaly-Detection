@@ -16,7 +16,8 @@ class TransactionPreprocessor:
     def __init__(self, 
                  categorical_features: List[str] = None,
                  numerical_features: List[str] = None,
-                 target: str = 'isFraud'):
+                 target: str = 'isFraud',
+                 config: Optional[Dict] = None):
         """
         Initialize the preprocessor with feature specifications.
         
@@ -24,6 +25,7 @@ class TransactionPreprocessor:
             categorical_features: List of categorical feature names
             numerical_features: List of numerical feature names
             target: Name of the target variable
+            config: Configuration dictionary with preprocessing settings
         """
         self.categorical_features = categorical_features or ['type']
         self.numerical_features = numerical_features or ['amount', 'oldbalanceOrg', 
@@ -32,6 +34,13 @@ class TransactionPreprocessor:
         self.target = target
         self.scaler = StandardScaler()
         self.encoders = {}
+        
+        # Load preprocessing config
+        self.config = config or {}
+        preprocess_config = self.config.get('preprocessing', {})
+        outlier_config = preprocess_config.get('outlier_detection', {})
+        self.iqr_multiplier = outlier_config.get('iqr_multiplier', 3.0)
+        self.epsilon = outlier_config.get('epsilon', 0.01)
         
     def load_data(self, 
                   filepath: str, 
@@ -101,8 +110,8 @@ class TransactionPreprocessor:
         df['isZeroBalanceOrig'] = (df.oldbalanceOrg == 0).astype(int)
         df['isZeroBalanceDest'] = (df.oldbalanceDest == 0).astype(int)
         
-        # Transaction amount relative to balances
-        df['amountToBalanceRatio'] = df.amount / df.oldbalanceOrg.replace(0, 0.01)
+        # Transaction amount relative to balances using config epsilon
+        df['amountToBalanceRatio'] = df.amount / df.oldbalanceOrg.replace(0, self.epsilon)
         
         # Flag for when destination account balance doesn't change despite receiving funds
         df['destBalanceUnchanged'] = ((df.newbalanceDest == df.oldbalanceDest) & 
@@ -125,9 +134,9 @@ class TransactionPreprocessor:
                 Q3 = df[col].quantile(0.75)
                 IQR = Q3 - Q1
                 
-                # Cap extreme values rather than removing them
-                lower_bound = Q1 - 3 * IQR
-                upper_bound = Q3 + 3 * IQR
+                # Cap extreme values rather than removing them using config multiplier
+                lower_bound = Q1 - self.iqr_multiplier * IQR
+                upper_bound = Q3 + self.iqr_multiplier * IQR
                 
                 # Create outlier flag features
                 df[f'{col}_outlier'] = ((df[col] < lower_bound) | (df[col] > upper_bound)).astype(int)

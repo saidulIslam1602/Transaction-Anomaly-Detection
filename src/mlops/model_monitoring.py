@@ -164,22 +164,41 @@ class ModelPerformanceMonitor:
     model degradation in production.
     """
     
-    def __init__(self, alert_thresholds: Optional[Dict[str, float]] = None):
+    def __init__(self, alert_thresholds: Optional[Dict[str, float]] = None, config: Optional[Dict] = None):
         """
         Initialize performance monitor.
         
         Args:
             alert_thresholds: Dictionary of metric thresholds for alerts
+            config: Configuration dictionary with monitoring settings
         """
-        self.alert_thresholds = alert_thresholds or {
-            'accuracy': 0.90,
-            'precision': 0.85,
-            'recall': 0.80,
-            'f1_score': 0.85,
-            'auc': 0.90
-        }
+        # Use provided alert_thresholds, or load from config, or use defaults
+        if alert_thresholds is not None:
+            self.alert_thresholds = alert_thresholds
+        elif config is not None:
+            self.alert_thresholds = config.get('monitoring', {}).get('performance_monitoring', {}).get('alert_thresholds', {
+                'accuracy': 0.90,
+                'precision': 0.85,
+                'recall': 0.80,
+                'f1_score': 0.85,
+                'auc': 0.90
+            })
+        else:
+            self.alert_thresholds = {
+                'accuracy': 0.90,
+                'precision': 0.85,
+                'recall': 0.80,
+                'f1_score': 0.85,
+                'auc': 0.90
+            }
         
         self.performance_history = []
+        
+        # Load trend detection thresholds from config
+        self.config = config or {}
+        monitoring_config = self.config.get('model_monitoring', {})
+        self.trend_improving = monitoring_config.get('performance_thresholds', {}).get('trend_improving', 0.01)
+        self.trend_degrading = monitoring_config.get('performance_thresholds', {}).get('trend_degrading', -0.01)
         
         logger.info("Model performance monitor initialized")
     
@@ -310,7 +329,7 @@ class ModelPerformanceMonitor:
         return summary
     
     def _calculate_trend(self, values: List[float]) -> str:
-        """Calculate trend direction for a metric."""
+        """Calculate trend direction for a metric using config thresholds."""
         if len(values) < 2:
             return 'stable'
         
@@ -318,9 +337,9 @@ class ModelPerformanceMonitor:
         x = np.arange(len(values))
         slope = np.polyfit(x, values, 1)[0]
         
-        if slope > 0.01:
+        if slope > self.trend_improving:
             return 'improving'
-        elif slope < -0.01:
+        elif slope < self.trend_degrading:
             return 'degrading'
         else:
             return 'stable'
@@ -340,16 +359,23 @@ class PredictionMonitor:
     Tracks prediction distributions and identifies unusual prediction patterns.
     """
     
-    def __init__(self, window_size: int = 1000):
+    def __init__(self, window_size: int = 1000, config: Optional[Dict] = None):
         """
         Initialize prediction monitor.
         
         Args:
             window_size: Size of sliding window for monitoring
+            config: Configuration dictionary with monitoring settings
         """
         self.window_size = window_size
         self.predictions_window = []
         self.scores_window = []
+        
+        # Load config values
+        self.config = config or {}
+        pred_monitoring = self.config.get('model_monitoring', {}).get('prediction_monitoring', {})
+        self.anomaly_threshold_std = pred_monitoring.get('anomaly_threshold_std', 2.0)
+        self.min_samples = pred_monitoring.get('min_samples_for_detection', 100)
         
         logger.info("Prediction monitor initialized")
     
@@ -401,19 +427,23 @@ class PredictionMonitor:
     
     def detect_prediction_anomalies(self,
                                    current_positive_rate: float,
-                                   threshold_std: float = 2.0) -> Dict[str, Any]:
+                                   threshold_std: Optional[float] = None) -> Dict[str, Any]:
         """
         Detect anomalies in prediction patterns.
         
         Args:
             current_positive_rate: Current positive prediction rate
-            threshold_std: Standard deviation threshold for anomaly
+            threshold_std: Standard deviation threshold for anomaly (uses config if not provided)
             
         Returns:
             Dictionary with anomaly detection results
         """
-        if len(self.predictions_window) < 100:
+        if len(self.predictions_window) < self.min_samples:
             return {'status': 'insufficient_data'}
+        
+        # Use provided threshold or config value
+        if threshold_std is None:
+            threshold_std = self.anomaly_threshold_std
         
         historical_rate = np.mean(self.predictions_window)
         historical_std = np.std(self.predictions_window)
@@ -446,17 +476,30 @@ class ComprehensiveModelMonitor:
     
     def __init__(self,
                  reference_data: pd.DataFrame,
-                 alert_thresholds: Optional[Dict] = None):
+                 alert_thresholds: Optional[Dict] = None,
+                 config: Optional[Dict] = None):
         """
         Initialize comprehensive monitor.
         
         Args:
             reference_data: Reference dataset for drift detection
             alert_thresholds: Performance alert thresholds
+            config: Configuration dictionary with monitoring settings
         """
-        self.drift_detector = DataDriftDetector(reference_data)
-        self.performance_monitor = ModelPerformanceMonitor(alert_thresholds)
-        self.prediction_monitor = PredictionMonitor()
+        # Use significance level from config if available
+        significance_level = 0.05
+        if config:
+            significance_level = config.get('model_monitoring', {}).get('drift_detection', {}).get('significance_level', 0.05)
+        
+        self.drift_detector = DataDriftDetector(reference_data, significance_level=significance_level)
+        self.performance_monitor = ModelPerformanceMonitor(alert_thresholds, config=config)
+        
+        # Use window size from config if available
+        window_size = 1000
+        if config:
+            window_size = config.get('monitoring', {}).get('prediction_monitoring', {}).get('window_size', 1000)
+        
+        self.prediction_monitor = PredictionMonitor(window_size=window_size, config=config)
         
         logger.info("Comprehensive model monitor initialized")
     

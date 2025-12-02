@@ -241,10 +241,11 @@ compliance:
 # Risk scoring
 risk_scoring:
   weights:
-    rule_based: 3.0
-    ml_based: 2.0
+    rule_based: 1.0
+    ml_based: 3.0
     network_based: 2.0
   high_risk_threshold: 2.0
+  adaptive_threshold_multiplier: 1.5  # For adaptive threshold calculation
   normalization_range: [0, 10]
 
 # MLflow tracking
@@ -300,6 +301,125 @@ performance:
   n_jobs: -1  # Use all CPU cores
   batch_size: 1000
   chunk_size: 10000
+
+# Business metrics
+business_metrics:
+  cost_per_alert_review: 10.0
+  industry_benchmarks:
+    avg_fraud_rate: 0.02
+    avg_risk_score: 3.5
+    avg_transaction_amount: 5000.0
+
+# Data preprocessing
+preprocessing:
+  outlier_detection:
+    iqr_multiplier: 3.0
+    epsilon: 0.01
+  feature_engineering:
+    velocity_window_hours: 24
+
+# Merchant services configuration
+merchant_services:
+  risk_thresholds:
+    high_risk: 7.0
+    medium_risk: 4.0
+    low_risk: 2.0
+  
+  health_score:
+    base_score: 100.0
+    fraud_rate_multiplier: 500
+    risk_score_threshold: 5.0
+    risk_score_penalty: 10.0
+  
+  recommendations:
+    fraud_rate_threshold: 0.05
+    risk_score_threshold: 6.0
+    min_transactions_threshold: 10
+  
+  alert_prioritization:
+    amount_thresholds:
+      critical: 10000
+      high: 5000
+      medium: 1000
+    detection_method_scores:
+      rule_based: 15
+      ml: 10
+      network: 12
+      immediate_action: 25
+    priority_levels:
+      critical: 80
+      high: 60
+      medium: 40
+    fraud_rate_multiplier: 50
+  
+  onboarding:
+    risk_score_thresholds:
+      reject: 60
+      monitor: 40
+      review: 20
+    business_age_thresholds:
+      new_business_years: 1
+      young_business_years: 3
+    business_age_scores:
+      new_business: 15
+      young_business: 10
+    high_risk_industry_score: 30
+    medium_risk_industry_score: 15
+    ownership_not_verified_score: 20
+    not_registered_score: 30
+    high_limit_threshold: 1000000
+    high_limit_score: 15
+    high_risk_country_score: 25
+    enhanced_monitoring_country_score: 15
+    transaction_limits:
+      high_risk: 10000
+      medium_risk: 50000
+      low_risk: 100000
+      very_low_risk: 500000
+
+# Training and sampling
+training:
+  sample_sizes:
+    normal_transactions: 10000
+    fraud_transactions: 10000
+    total_sample_limit: 20000
+  high_risk_accounts_limit: 100
+
+# API configuration
+api:
+  enabled: false
+  host: "0.0.0.0"
+  port: 8000
+  workers: 4
+  reload: false
+  
+  prediction:
+    fraud_threshold: 0.7
+    default_confidence: 0.85
+    risk_level_thresholds:
+      critical: 0.75
+      high: 0.5
+      medium: 0.25
+    
+    risk_calculation:
+      amount_weight: 0.4
+      balance_ratio_weight: 0.3
+      transaction_type_weight: 0.3
+      amount_normalizer: 10000.0
+      high_risk_types: ['TRANSFER', 'CASH_OUT']
+      high_risk_type_score: 1.0
+      low_risk_type_score: 0.3
+
+# Model monitoring thresholds
+model_monitoring:
+  drift_detection:
+    significance_level: 0.05
+  performance_thresholds:
+    trend_improving: 0.01
+    trend_degrading: -0.01
+  prediction_monitoring:
+    anomaly_threshold_std: 2.0
+    min_samples_for_detection: 100
 
 # Debugging
 debug:
