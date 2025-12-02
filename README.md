@@ -18,7 +18,8 @@ This transaction anomaly detection system provides a complete pipeline for fraud
 ### Key Features
 
 - Production-ready Azure deployment with live API
-- 23 Python modules with 6,824+ lines of code
+- 23 Python modules with 7,800+ lines of code
+- **Fully configurable system** - 60+ parameters externalized to config.yaml
 - **Multi-model architecture**:
   - Traditional ML: XGBoost, LightGBM, Random Forest, Isolation Forest
   - **Advanced Deep Learning: Autoencoder, LSTM Autoencoder, Transformer**
@@ -32,7 +33,8 @@ This transaction anomaly detection system provides a complete pipeline for fraud
 - Automated reporting system (daily, weekly, monthly)
 - BI tool integration (Power BI, Looker)
 - Model diagnostics for overfitting and bias detection
-- Rule-based AML compliance scenarios with conservative thresholds
+- Rule-based AML compliance scenarios with configurable thresholds
+- **No hardcoded business logic** - all parameters configurable for A/B testing
 
 ## Data Analyst Capabilities
 
@@ -275,6 +277,7 @@ Transaction-Anomaly-Detection/
 ├── tests/
 │   ├── test_bi_export.py
 │   ├── test_business_metrics.py
+│   ├── test_config_integration.py  # Configuration integration tests
 │   ├── test_feature_store.py
 │   ├── test_llm_service.py
 │   ├── test_model_monitoring.py
@@ -675,30 +678,120 @@ Regularization techniques (L1/L2, early stopping, reduced complexity) are applie
 
 ## Configuration
 
-All features are configurable via `config/config.yaml`:
+The system is fully configurable via `config/config.yaml`. All business logic, thresholds, and parameters are externalized for easy customization without code changes.
+
+### Configuration Sections
 
 ```yaml
-llm:
-  enabled: false  # Requires OpenAI API key
-  model: "gpt-4"
+# Business metrics and costs
+business_metrics:
+  cost_per_alert_review: 10.0
+  industry_benchmarks:
+    avg_fraud_rate: 0.02
+    avg_risk_score: 3.5
+    avg_transaction_amount: 5000.0
 
-rag:
-  enabled: false  # Requires ChromaDB
+# Data preprocessing parameters
+preprocessing:
+  outlier_detection:
+    iqr_multiplier: 3.0
+    epsilon: 0.01
 
-monitoring:
-  enabled: true
+# Merchant services configuration
+merchant_services:
+  risk_thresholds:
+    high_risk: 7.0
+    medium_risk: 4.0
+    low_risk: 2.0
+  alert_prioritization:
+    amount_thresholds:
+      critical: 10000
+      high: 5000
+      medium: 1000
+  onboarding:
+    risk_score_thresholds:
+      reject: 60
+      monitor: 40
+      review: 20
 
-compliance:
-  enabled: true
-
+# ML model hyperparameters
 ml_models:
   xgboost:
     enabled: true
     max_depth: 6
     learning_rate: 0.1
+    n_estimators: 100
+  lightgbm:
+    enabled: true
+    num_leaves: 31
+    learning_rate: 0.05
+  random_forest:
+    enabled: true
+    n_estimators: 100
+    max_depth: 10
+
+# Risk scoring weights
+risk_scoring:
+  weights:
+    rule_based: 1.0
+    ml_based: 3.0
+    network_based: 2.0
+  adaptive_threshold_multiplier: 1.5
+
+# API prediction settings
+api:
+  prediction:
+    fraud_threshold: 0.7
+    default_confidence: 0.85
+    risk_level_thresholds:
+      critical: 0.75
+      high: 0.5
+      medium: 0.25
+
+# Model monitoring thresholds
+model_monitoring:
+  performance_thresholds:
+    trend_improving: 0.01
+    trend_degrading: -0.01
+  prediction_monitoring:
+    anomaly_threshold_std: 2.0
+
+# Feature toggles
+llm:
+  enabled: false  # Requires OpenAI API key
+rag:
+  enabled: false  # Requires ChromaDB
+monitoring:
+  enabled: true
+compliance:
+  enabled: true
 ```
 
-See `config/config.yaml` for full configuration options.
+### Configuration Benefits
+
+- **No Hardcoded Values**: All business logic parameters are configurable
+- **Environment-Specific**: Easy to create dev/staging/prod configurations
+- **A/B Testing**: Test different thresholds without code changes
+- **Audit Trail**: Configuration changes are version-controlled
+- **Easy Tuning**: Adjust system behavior without deployment
+
+### Loading Configuration
+
+```python
+from utils.helpers import load_config
+
+# Load configuration
+config = load_config()
+
+# Initialize components with config
+from src.services.business_metrics import BusinessMetricsCalculator
+from src.services.merchant_services import MerchantRiskIntelligenceService
+
+calc = BusinessMetricsCalculator(config=config)
+service = MerchantRiskIntelligenceService(config=config)
+```
+
+See `config/config.yaml` for full configuration options and `VERIFICATION_CHECKLIST.md` for configuration documentation.
 
 ## Self-Service Analytics
 
@@ -777,6 +870,9 @@ See `databricks/README.md` for Databricks workspace setup.
 # Run all tests
 pytest tests/
 
+# Test configuration integration
+pytest tests/test_config_integration.py -v
+
 # Test specific module
 pytest tests/test_llm_service.py
 
@@ -821,6 +917,7 @@ See `terraform/README.md` for detailed deployment instructions.
 ## Documentation
 
 - Configuration: `config/config.yaml`
+- Configuration Guide: `VERIFICATION_CHECKLIST.md`
 - API Reference: `src/api/main.py`
 - Data Analyst Role: `docs/DATA_ANALYST_ROLE.md`
 - Product Collaboration: `docs/PRODUCT_COLLABORATION.md`
@@ -833,12 +930,13 @@ See `terraform/README.md` for detailed deployment instructions.
 ## Project Statistics
 
 - Python modules: 23 in src/
-- Total Python files: 42
+- Total Python files: 43
 - SQL models: 4 (dbt)
-- Lines of code: 6,824+
+- Lines of code: 7,800+
 - Databricks notebooks: 3
-- Test files: 6
-- Documentation files: 7
+- Test files: 7
+- Documentation files: 8
+- Configuration parameters: 60+
 
 ## License
 
@@ -855,6 +953,6 @@ Saidul Islam
 
 Built for enterprise payment processing platforms and designed to demonstrate data analyst capabilities including SQL, Python, Databricks, dbt, and self-service analytics tools.
 
-Last Updated: November 2025
-Version: 2.0.0
+Last Updated: December 2025
+Version: 2.1.0
 Status: Production-Ready
